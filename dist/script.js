@@ -23,6 +23,6 @@
     lottie3.classList.add("active");
   });
   buttonTest.addEventListener("click", function(e) {
-    console.log("test clicked");
+    console.log("test clicked!");
   });
 })();

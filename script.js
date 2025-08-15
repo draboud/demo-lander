@@ -24,5 +24,5 @@ button3.addEventListener("click", function (e) {
 });
 
 buttonTest.addEventListener("click", function (e) {
-  console.log("test clicked");
+  console.log("test clicked!");
 });
