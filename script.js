@@ -24,7 +24,7 @@ const buttonContainer = document.querySelector(".btn-container");
 let lottieFlag;
 //...........................................................
 
-console.log("Aug 22, 2025-3:41");
+console.log("Aug 22, 2025-3:49");
 
 const mutationObserver = new MutationObserver((entries) => {
   const target = entries[entries.length - 1].target.classList[1];
