@@ -23,6 +23,7 @@
   var btnVanish = document.querySelector(".btn-lottie.vanish");
   var buttonContainer = document.querySelector(".btn-container");
   var lottieFlag;
+  console.log("Aug 22, 2025");
   var mutationObserver = new MutationObserver((entries) => {
     console.log("now");
     const target = entries[entries.length - 1].target.classList[1];
