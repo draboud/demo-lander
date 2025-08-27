@@ -23,7 +23,38 @@
   var btnVanish = document.querySelector(".btn-lottie.vanish");
   var buttonContainer = document.querySelector(".btn-container");
   var lottieFlag;
-  console.log("Aug 22, 2025-3:49");
+  var vidRotation = document.querySelector(".vid-rotation");
+  var vidAllWrapFirst = document.querySelector(".vid-all-wrapper.first");
+  var vidContentWrapFirst = document.querySelector(
+    ".vid-content-wrapper.first"
+  );
+  var vidView1 = document.querySelector(".vid-view1");
+  var vidView2 = document.querySelector(".vid-view2");
+  var vidView3 = document.querySelector(".vid-view3");
+  var allVids = document.querySelectorAll(".video-wrapper");
+  var vidBtnContainer = document.querySelector(".btn-vid-container");
+  var vidFlag;
+  console.log("Aug 25, 2025-3:49");
+  vidBtnContainer.addEventListener("click", function(e) {
+    const clicked = e.target.closest(".button-vid");
+    if (!clicked) return;
+    vidFlag = clicked.classList[1];
+    setActiveVidAndPlay(vidFlag);
+  });
+  vidView1.addEventListener("ended", function() {
+    console.log("video 1 has ended");
+    vidContentWrapFirst.classList.add("active");
+  });
+  var setActiveVidAndPlay = function(vidFlag2) {
+    allVids.forEach(function(el) {
+      el.classList.remove("active");
+      el.currentTime = 0;
+      if (el.classList.contains(vidFlag2)) {
+        el.classList.add("active");
+      }
+    });
+    document.querySelector(`.vid-${vidFlag2}`).play();
+  };
   var mutationObserver = new MutationObserver((entries) => {
     const target = entries[entries.length - 1].target.classList[1];
     document.querySelector(`.btn-lottie.${target}`).click();
