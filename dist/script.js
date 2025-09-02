@@ -54,7 +54,7 @@
   var dotsExplodeWrapper = document.querySelector(".dots-explode-wrapper");
   var dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
   var explodeFlag = false;
-  console.log("testing spacing-v14");
+  console.log("testing spacing-square");
   mapBtnContainer.addEventListener("click", function(e) {
     const clicked = e.target.closest(".button-vid");
     if (!clicked) return;
