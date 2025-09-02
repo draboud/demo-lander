@@ -44,6 +44,51 @@
   var vidBtnContainer = document.querySelector(".btn-vid-container");
   var vidFlag;
   var newTimer;
+  var mapBtnContainer = document.querySelector(".btn-map-container");
+  var vidExplodeWrapper = document.querySelector(".vid-explode-wrapper");
+  var vidAssembleWrapper = document.querySelector(".vid-assemble-wrapper");
+  var vidExplode = document.querySelector(".vid-explode");
+  var vidAssemble = document.querySelector(".vid-assemble");
+  var textExplode = document.querySelector(".text.explode");
+  var textAssemble = document.querySelector(".text.assemble");
+  var dotsExplodeWrapper = document.querySelector(".dots-explode-wrapper");
+  var dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
+  var explodeFlag = false;
+  mapBtnContainer.addEventListener("click", function(e) {
+    const clicked = e.target.closest(".button-vid");
+    if (!clicked) return;
+    vidExplode.currentTime = 0;
+    vidAssemble.currentTime = 0;
+    explodeFlag ? assembleFunction() : explodeFunction();
+  });
+  var explodeFunction = function() {
+    mapBtnContainer.style["pointer-events"] = "none";
+    explodeFlag = true;
+    dotsExplodeWrapper.classList.remove("active");
+    vidExplodeWrapper.classList.add("active");
+    vidAssembleWrapper.classList.remove("active");
+    vidExplode.play();
+    textExplode.style.display = "none";
+    textAssemble.style.display = "block";
+  };
+  var assembleFunction = function() {
+    mapBtnContainer.style["pointer-events"] = "none";
+    explodeFlag = false;
+    dotsAssembleWrapper.classList.remove("active");
+    vidAssembleWrapper.classList.add("active");
+    vidExplodeWrapper.classList.remove("active");
+    vidAssemble.play();
+    textAssemble.style.display = "none";
+    textExplode.style.display = "block";
+  };
+  vidExplode.addEventListener("ended", function() {
+    mapBtnContainer.style["pointer-events"] = "auto";
+    dotsAssembleWrapper.classList.add("active");
+  });
+  vidAssemble.addEventListener("ended", function() {
+    mapBtnContainer.style["pointer-events"] = "auto";
+    dotsExplodeWrapper.classList.add("active");
+  });
   vidBtnContainer.addEventListener("click", function(e) {
     const clicked = e.target.closest(".button-vid");
     if (!clicked) return;

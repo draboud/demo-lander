@@ -44,6 +44,58 @@ const vidBtnContainer = document.querySelector(".btn-vid-container");
 let vidFlag;
 let newTimer;
 //...........................................................
+const mapBtnContainer = document.querySelector(".btn-map-container");
+const vidExplodeWrapper = document.querySelector(".vid-explode-wrapper");
+const vidAssembleWrapper = document.querySelector(".vid-assemble-wrapper");
+const vidExplode = document.querySelector(".vid-explode");
+const vidAssemble = document.querySelector(".vid-assemble");
+const textExplode = document.querySelector(".text.explode");
+const textAssemble = document.querySelector(".text.assemble");
+const dotsExplodeWrapper = document.querySelector(".dots-explode-wrapper");
+const dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
+let explodeFlag = false;
+//...........................................................
+//MAP
+mapBtnContainer.addEventListener("click", function (e) {
+  const clicked = e.target.closest(".button-vid");
+  if (!clicked) return;
+  vidExplode.currentTime = 0;
+  vidAssemble.currentTime = 0;
+  explodeFlag ? assembleFunction() : explodeFunction();
+});
+
+const explodeFunction = function () {
+  mapBtnContainer.style["pointer-events"] = "none";
+  explodeFlag = true;
+  dotsExplodeWrapper.classList.remove("active");
+  vidExplodeWrapper.classList.add("active");
+  vidAssembleWrapper.classList.remove("active");
+  vidExplode.play();
+  textExplode.style.display = "none";
+  textAssemble.style.display = "block";
+};
+const assembleFunction = function () {
+  mapBtnContainer.style["pointer-events"] = "none";
+  explodeFlag = false;
+  dotsAssembleWrapper.classList.remove("active");
+  vidAssembleWrapper.classList.add("active");
+  vidExplodeWrapper.classList.remove("active");
+  vidAssemble.play();
+  textAssemble.style.display = "none";
+  textExplode.style.display = "block";
+};
+vidExplode.addEventListener("ended", function () {
+  mapBtnContainer.style["pointer-events"] = "auto";
+  dotsAssembleWrapper.classList.add("active");
+});
+vidAssemble.addEventListener("ended", function () {
+  mapBtnContainer.style["pointer-events"] = "auto";
+  dotsExplodeWrapper.classList.add("active");
+});
+const datasheetsFunction = function () {
+  console.log("datasheet function");
+};
+//...........................................................
 //VIDEO
 vidBtnContainer.addEventListener("click", function (e) {
   const clicked = e.target.closest(".button-vid");
