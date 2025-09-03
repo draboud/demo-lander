@@ -56,7 +56,7 @@ const dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
 let explodeFlag = false;
 //...........................................................
 //SIZING & SNAPING
-console.log("testing!");
+console.log("testing 2!");
 const vidSection = document.querySelector(".section_spacing");
 const contactSection = document.querySelector(".section_contact.snap");
 const scrollBtnContainer = document.querySelector(".btn-scroll-container");
@@ -76,12 +76,15 @@ vidSection.addEventListener("wheel", function (e) {
     contactSection.classList.add("active");
     vidSection.classList.remove("active");
   }
-  contactSection.addEventListener("wheel", function (e) {
-    if (e.deltaY < 0) {
-      vidSection.classList.add("active");
-      contactSection.classList.remove("active");
-    }
-  });
+});
+vidSection.addEventListener("touchmove", function () {
+  console.log("touchmove!");
+});
+contactSection.addEventListener("wheel", function (e) {
+  if (e.deltaY < 0) {
+    vidSection.classList.add("active");
+    contactSection.classList.remove("active");
+  }
 });
 btnScroll2.addEventListener("click", function () {
   console.log("button 2 clicked");

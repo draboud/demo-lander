@@ -54,7 +54,7 @@
   var dotsExplodeWrapper = document.querySelector(".dots-explode-wrapper");
   var dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
   var explodeFlag = false;
-  console.log("testing!");
+  console.log("testing 2!");
   var vidSection = document.querySelector(".section_spacing");
   var contactSection = document.querySelector(".section_contact.snap");
   var scrollBtnContainer = document.querySelector(".btn-scroll-container");
@@ -73,12 +73,15 @@
       contactSection.classList.add("active");
       vidSection.classList.remove("active");
     }
-    contactSection.addEventListener("wheel", function(e2) {
-      if (e2.deltaY < 0) {
-        vidSection.classList.add("active");
-        contactSection.classList.remove("active");
-      }
-    });
+  });
+  vidSection.addEventListener("touchmove", function() {
+    console.log("touchmove!");
+  });
+  contactSection.addEventListener("wheel", function(e) {
+    if (e.deltaY < 0) {
+      vidSection.classList.add("active");
+      contactSection.classList.remove("active");
+    }
   });
   btnScroll2.addEventListener("click", function() {
     console.log("button 2 clicked");
