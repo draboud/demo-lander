@@ -56,7 +56,7 @@ const dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
 let explodeFlag = false;
 //...........................................................
 //SIZING
-console.log("testing latest");
+console.log("testing 9x16");
 //...........................................................
 //MAP
 mapBtnContainer.addEventListener("click", function (e) {
