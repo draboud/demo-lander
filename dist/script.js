@@ -54,7 +54,7 @@
   var dotsExplodeWrapper = document.querySelector(".dots-explode-wrapper");
   var dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
   var explodeFlag = false;
-  console.log("testing zoom confirmed");
+  console.log("testing latest");
   mapBtnContainer.addEventListener("click", function(e) {
     const clicked = e.target.closest(".button-vid");
     if (!clicked) return;

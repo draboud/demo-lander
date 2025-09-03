@@ -55,8 +55,10 @@ const dotsExplodeWrapper = document.querySelector(".dots-explode-wrapper");
 const dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
 let explodeFlag = false;
 //...........................................................
+//SIZING
+console.log("testing latest");
+//...........................................................
 //MAP
-console.log("testing zoom confirmed");
 mapBtnContainer.addEventListener("click", function (e) {
   const clicked = e.target.closest(".button-vid");
   if (!clicked) return;
