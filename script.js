@@ -56,7 +56,7 @@ const dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
 let explodeFlag = false;
 //...........................................................
 //MAP
-console.log("testing spacing-square");
+console.log("testing zoom confirmed");
 mapBtnContainer.addEventListener("click", function (e) {
   const clicked = e.target.closest(".button-vid");
   if (!clicked) return;
