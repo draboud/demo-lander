@@ -54,7 +54,36 @@
   var dotsExplodeWrapper = document.querySelector(".dots-explode-wrapper");
   var dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
   var explodeFlag = false;
-  console.log("testing 16x9");
+  console.log("testing!");
+  var vidSection = document.querySelector(".section_spacing");
+  var contactSection = document.querySelector(".section_contact.snap");
+  var scrollBtnContainer = document.querySelector(".btn-scroll-container");
+  var btnScroll1 = document.querySelector(".button-scroll.scroll1");
+  var btnScroll2 = document.querySelector(".button-scroll.scroll2");
+  scrollBtnContainer.addEventListener("click", function(e) {
+    const clicked = e.target.closest(".button-scroll");
+    if (!clicked) return;
+  });
+  btnScroll1.addEventListener("click", function() {
+    console.log("button 1 clicked");
+    document.documentElement.scrollTo(0, 250);
+  });
+  vidSection.addEventListener("wheel", function(e) {
+    if (e.deltaY > 0) {
+      contactSection.classList.add("active");
+      vidSection.classList.remove("active");
+    }
+    contactSection.addEventListener("wheel", function(e2) {
+      if (e2.deltaY < 0) {
+        vidSection.classList.add("active");
+        contactSection.classList.remove("active");
+      }
+    });
+  });
+  btnScroll2.addEventListener("click", function() {
+    console.log("button 2 clicked");
+    document.documentElement.scrollTo(0, -250);
+  });
   mapBtnContainer.addEventListener("click", function(e) {
     const clicked = e.target.closest(".button-vid");
     if (!clicked) return;

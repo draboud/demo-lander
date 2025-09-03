@@ -55,8 +55,39 @@ const dotsExplodeWrapper = document.querySelector(".dots-explode-wrapper");
 const dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
 let explodeFlag = false;
 //...........................................................
-//SIZING
-console.log("testing 16x9");
+//SIZING & SNAPING
+console.log("testing!");
+const vidSection = document.querySelector(".section_spacing");
+const contactSection = document.querySelector(".section_contact.snap");
+const scrollBtnContainer = document.querySelector(".btn-scroll-container");
+const btnScroll1 = document.querySelector(".button-scroll.scroll1");
+const btnScroll2 = document.querySelector(".button-scroll.scroll2");
+
+scrollBtnContainer.addEventListener("click", function (e) {
+  const clicked = e.target.closest(".button-scroll");
+  if (!clicked) return;
+});
+btnScroll1.addEventListener("click", function () {
+  console.log("button 1 clicked");
+  document.documentElement.scrollTo(0, 250);
+});
+vidSection.addEventListener("wheel", function (e) {
+  if (e.deltaY > 0) {
+    contactSection.classList.add("active");
+    vidSection.classList.remove("active");
+  }
+  contactSection.addEventListener("wheel", function (e) {
+    if (e.deltaY < 0) {
+      vidSection.classList.add("active");
+      contactSection.classList.remove("active");
+    }
+  });
+});
+btnScroll2.addEventListener("click", function () {
+  console.log("button 2 clicked");
+  document.documentElement.scrollTo(0, -250);
+});
+
 //...........................................................
 //MAP
 mapBtnContainer.addEventListener("click", function (e) {
