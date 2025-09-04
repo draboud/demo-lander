@@ -65,6 +65,7 @@ const btnScroll2 = document.querySelector(".button-scroll.scroll2");
 
 const touchSection1 = document.querySelector(".section_touch-event.first");
 const touchSection2 = document.querySelector(".section_touch-event.second");
+const testDiv = document.querySelector(".test-div");
 
 // scrollBtnContainer.addEventListener("click", function (e) {
 //   const clicked = e.target.closest(".button-scroll");
@@ -74,11 +75,20 @@ const touchSection2 = document.querySelector(".section_touch-event.second");
 //   console.log("button 1 clicked");
 //   document.documentElement.scrollTo(0, 250);
 // });
+// document.addEventListener("touchmove", function () {
+//   console.log("touch!");
+//   // document.querySelector(".screen-sizer.m-p").innerHTML = "hi";
+//   testDiv.style.display = "block";
+// });
 touchSection1.addEventListener("wheel", function (e) {
   if (e.deltaY > 0) {
     touchSection2.classList.add("active");
     touchSection1.classList.remove("active");
   }
+});
+touchSection1.addEventListener("touchmove", function () {
+  touchSection2.classList.add("active");
+  touchSection1.classList.remove("active");
 });
 touchSection2.addEventListener("wheel", function (e) {
   if (e.deltaY < 0) {
@@ -86,6 +96,11 @@ touchSection2.addEventListener("wheel", function (e) {
     touchSection2.classList.remove("active");
   }
 });
+touchSection2.addEventListener("touchmove", function (e) {
+  touchSection1.classList.add("active");
+  touchSection2.classList.remove("active");
+});
+
 // vidSection.addEventListener("touchstart", function (e) {
 //   e.preventDefault();
 //   document.querySelector(".screen-sizer.m-l").innerHTML = "hi!";

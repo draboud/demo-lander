@@ -62,17 +62,26 @@
   var btnScroll2 = document.querySelector(".button-scroll.scroll2");
   var touchSection1 = document.querySelector(".section_touch-event.first");
   var touchSection2 = document.querySelector(".section_touch-event.second");
+  var testDiv = document.querySelector(".test-div");
   touchSection1.addEventListener("wheel", function(e) {
     if (e.deltaY > 0) {
       touchSection2.classList.add("active");
       touchSection1.classList.remove("active");
     }
   });
+  touchSection1.addEventListener("touchmove", function() {
+    touchSection2.classList.add("active");
+    touchSection1.classList.remove("active");
+  });
   touchSection2.addEventListener("wheel", function(e) {
     if (e.deltaY < 0) {
       touchSection1.classList.add("active");
       touchSection2.classList.remove("active");
     }
+  });
+  touchSection2.addEventListener("touchmove", function(e) {
+    touchSection1.classList.add("active");
+    touchSection2.classList.remove("active");
   });
   mapBtnContainer.addEventListener("click", function(e) {
     const clicked = e.target.closest(".button-vid");
