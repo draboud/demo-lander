@@ -56,7 +56,7 @@ const dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
 let explodeFlag = false;
 //...........................................................
 //SIZING & SNAPING
-console.log("testing 10!");
+console.log("testing 11!");
 const vidSection = document.querySelector(".section_spacing");
 const contactSection = document.querySelector(".section_contact.snap");
 // const scrollBtnContainer = document.querySelector(".btn-scroll-container");
@@ -148,11 +148,13 @@ sectionFeatures.addEventListener("touchstart", function (e) {
 sectionFeatures.addEventListener("touchend", function (e) {
   endY = e.changedTouches[0].screenY;
   if (endY < startY) {
-    sectionExplode.classList.add("active");
-    sectionFeatures.classList.remove("active");
+    // sectionExplode.classList.add("active");
+    // sectionFeatures.classList.remove("active");
+    setActiveSectionLinkBtns("explode");
   } else if (endY > startY) {
-    sectionFeatures.classList.add("active");
-    sectionExplode.classList.remove("active");
+    // sectionFeatures.classList.add("active");
+    // sectionExplode.classList.remove("active");
+    setActiveSectionLinkBtns("features");
   }
 });
 sectionExplode.addEventListener("wheel", function (e) {
@@ -165,11 +167,13 @@ sectionExplode.addEventListener("wheel", function (e) {
 sectionExplode.addEventListener("touchend", function (e) {
   endY = e.changedTouches[0].screenY;
   if (endY > startY) {
-    sectionFeatures.classList.add("active");
-    sectionExplode.classList.remove("active");
+    // sectionFeatures.classList.add("active");
+    // sectionExplode.classList.remove("active");
+    setActiveSectionLinkBtns("features");
   } else if (endY < startY) {
-    sectionExplode.classList.add("active");
-    sectionFeatures.classList.remove("active");
+    // sectionExplode.classList.add("active");
+    // sectionFeatures.classList.remove("active");
+    setActiveSectionLinkBtns("explode");
   }
 });
 sectionExplode.addEventListener("touchmove", function (e) {
