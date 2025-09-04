@@ -54,7 +54,7 @@
   var dotsExplodeWrapper = document.querySelector(".dots-explode-wrapper");
   var dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
   var explodeFlag = false;
-  console.log("testing 14!");
+  console.log("testing 17!");
   var vidSection = document.querySelector(".section_spacing");
   var contactSection = document.querySelector(".section_contact.snap");
   var btnScroll1 = document.querySelector(".button-scroll.scroll1");
@@ -72,12 +72,42 @@
   var miniNavLink = document.querySelector(".mini-nav-link");
   var buttonWrapper = document.querySelector(".ctrl-btn-wrapper");
   var activeNav = document.querySelector(".active-nav");
-  miniNav.addEventListener("mouseover", function() {
+  var usingTouch = false;
+  window.addEventListener("touchend", function() {
+    console.log("touch end");
+    usingTouch = true;
+    allNavLinks.forEach(function(el) {
+      el.classList.remove("active");
+      if (el.classList.contains(section)) {
+        el.classList.add("active");
+      }
+      miniNav.style.height = "2.6rem";
+      activeNav.style.display = "block";
+    });
+  });
+  miniNav.addEventListener("touchstart", function() {
+    usingTouch = true;
     miniNav.style.height = "auto";
     activeNav.style.display = "none";
-    miniNavLink.style.display = "block";
+    allNavLinks.forEach(function(el) {
+      el.style["pointer-events"] = "none";
+      setTimeout(() => el.style["pointer-events"] = "auto", 100);
+      el.style.display = "block";
+      if (el.classList.contains(section)) {
+        el.classList.add("active");
+      }
+    });
   });
-  miniNav.addEventListener("mouseout", function() {
+  miniNav.addEventListener("mouseenter", function() {
+    miniNav.style.height = "auto";
+    activeNav.style.display = "none";
+    allNavLinks.forEach(function(el) {
+      el.style["pointer-events"] = "none";
+      setTimeout(() => el.style["pointer-events"] = "auto", 100);
+      el.style.display = "block";
+    });
+  });
+  miniNav.addEventListener("mouseleave", function() {
     miniNav.style.height = "2.6rem";
     activeNav.style.display = "block";
     miniNavLink.style.display = "none";
@@ -86,30 +116,32 @@
     const clicked = e.target.closest(".mini-nav-link");
     if (!clicked) return;
     setActiveSectionLinkBtns(clicked.classList[1]);
+    console.log(clicked.classList[1]);
   });
   buttonWrapper.addEventListener("click", function(e) {
     const clicked = e.target.closest(".ctrl-btn");
     if (!clicked) return;
     console.log(clicked);
   });
-  var setActiveSectionLinkBtns = function(section) {
-    allSections.forEach(function(el) {
+  var setActiveSectionLinkBtns = function(section2) {
+    activeNav.innerHTML = section2;
+    allNavLinks.forEach(function(el) {
       el.classList.remove("active");
-      if (el.classList.contains(section)) {
+      if (el.classList.contains(section2)) {
         el.classList.add("active");
       }
+      miniNav.style.height = "2.6rem";
+      activeNav.style.display = "block";
     });
-    allNavLinks.forEach(function(el) {
-      activeNav.innerHTML = section;
-      el.style.display = "none";
+    allSections.forEach(function(el) {
       el.classList.remove("active");
-      if (el.classList.contains(section)) {
+      if (el.classList.contains(section2)) {
         el.classList.add("active");
       }
     });
     allCtrlBtns.forEach(function(el) {
       el.classList.remove("active");
-      if (el.classList.contains(section)) {
+      if (el.classList.contains(section2)) {
         el.classList.add("active");
       }
     });

@@ -56,7 +56,7 @@ const dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
 let explodeFlag = false;
 //...........................................................
 //SIZING & SNAPING
-console.log("testing 14!");
+console.log("testing 17!");
 const vidSection = document.querySelector(".section_spacing");
 const contactSection = document.querySelector(".section_contact.snap");
 // const scrollBtnContainer = document.querySelector(".btn-scroll-container");
@@ -84,13 +84,64 @@ const miniNav = document.querySelector(".mini-nav-wrapper");
 const miniNavLink = document.querySelector(".mini-nav-link");
 const buttonWrapper = document.querySelector(".ctrl-btn-wrapper");
 const activeNav = document.querySelector(".active-nav");
+let usingTouch = false;
+// miniNav.addEventListener("click", function () {
+//   console.log("mouse click");
+//   miniNav.style.height = "auto";
+//   activeNav.style.display = "none";
+//   // miniNavLink.style.display = "block";
+//   allNavLinks.forEach(function (el) {
+//     el.style.display = "block";
+//   });
+// });
 
-miniNav.addEventListener("mouseover", function () {
+// activeNav.addEventListener("click", function () {
+//   console.log("hi");
+// });
+window.addEventListener("touchend", function () {
+  console.log("touch end");
+  usingTouch = true;
+  allNavLinks.forEach(function (el) {
+    // setTimeout(() => (el.style["pointer-events"] = "auto"), 100);
+
+    // el.style.display = "none";
+    // miniNav.mouseleave();
+    // miniNav.style["pointer-events"] = "none";
+    el.classList.remove("active");
+    if (el.classList.contains(section)) {
+      el.classList.add("active");
+    }
+    miniNav.style.height = "2.6rem";
+    activeNav.style.display = "block";
+  });
+});
+miniNav.addEventListener("touchstart", function () {
+  usingTouch = true;
   miniNav.style.height = "auto";
   activeNav.style.display = "none";
-  miniNavLink.style.display = "block";
+  // miniNavLink.style.display = "block";
+  allNavLinks.forEach(function (el) {
+    el.style["pointer-events"] = "none";
+    setTimeout(() => (el.style["pointer-events"] = "auto"), 100);
+    el.style.display = "block";
+    if (el.classList.contains(section)) {
+      el.classList.add("active");
+    }
+  });
 });
-miniNav.addEventListener("mouseout", function () {
+miniNav.addEventListener("mouseenter", function () {
+  // console.log("mouse enter");
+  miniNav.style.height = "auto";
+  activeNav.style.display = "none";
+  // miniNavLink.style.display = "block";
+  allNavLinks.forEach(function (el) {
+    el.style["pointer-events"] = "none";
+    setTimeout(() => (el.style["pointer-events"] = "auto"), 100);
+    el.style.display = "block";
+  });
+});
+miniNav.addEventListener("mouseleave", function () {
+  // console.log("left");
   miniNav.style.height = "2.6rem";
   activeNav.style.display = "block";
   miniNavLink.style.display = "none";
@@ -100,6 +151,7 @@ miniNav.addEventListener("click", function (e) {
   const clicked = e.target.closest(".mini-nav-link");
   if (!clicked) return;
   setActiveSectionLinkBtns(clicked.classList[1]);
+  console.log(clicked.classList[1]);
 });
 buttonWrapper.addEventListener("click", function (e) {
   const clicked = e.target.closest(".ctrl-btn");
@@ -108,15 +160,19 @@ buttonWrapper.addEventListener("click", function (e) {
 });
 
 const setActiveSectionLinkBtns = function (section) {
-  allSections.forEach(function (el) {
+  activeNav.innerHTML = section;
+  allNavLinks.forEach(function (el) {
+    // el.style.display = "none";
+    // miniNav.mouseleave();
+    // miniNav.style["pointer-events"] = "none";
     el.classList.remove("active");
     if (el.classList.contains(section)) {
       el.classList.add("active");
     }
+    miniNav.style.height = "2.6rem";
+    activeNav.style.display = "block";
   });
-  allNavLinks.forEach(function (el) {
-    activeNav.innerHTML = section;
-    el.style.display = "none";
+  allSections.forEach(function (el) {
     el.classList.remove("active");
     if (el.classList.contains(section)) {
       el.classList.add("active");
@@ -128,6 +184,8 @@ const setActiveSectionLinkBtns = function (section) {
       el.classList.add("active");
     }
   });
+  // const mouseLeaveEvent = new MouseEvent("mouseleave");
+  // miniNav.dispatchEvent(mouseLeaveEvent);
 };
 //...........................................................
 
