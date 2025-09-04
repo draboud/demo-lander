@@ -54,51 +54,101 @@
   var dotsExplodeWrapper = document.querySelector(".dots-explode-wrapper");
   var dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
   var explodeFlag = false;
-  console.log("testing 7!");
+  console.log("testing 10!");
   var vidSection = document.querySelector(".section_spacing");
   var contactSection = document.querySelector(".section_contact.snap");
-  var scrollBtnContainer = document.querySelector(".btn-scroll-container");
   var btnScroll1 = document.querySelector(".button-scroll.scroll1");
   var btnScroll2 = document.querySelector(".button-scroll.scroll2");
-  var touchSection1 = document.querySelector(".section_touch-event.first");
-  var touchSection2 = document.querySelector(".section_touch-event.second");
+  var sectionFeatures = document.querySelector(".section_action.features");
+  var sectionExplode = document.querySelector(".section_action.explode");
+  var allSections = document.querySelectorAll(".section_action");
+  var allNavLinks = document.querySelectorAll(".mini-nav-link");
+  var allCtrlBtns = document.querySelectorAll(".ctrl-btn");
+  var mainWrapper = document.querySelector(".main-wrapper");
   var testDiv = document.querySelector(".test-div");
   var startY;
   var endY;
-  touchSection1.addEventListener("wheel", function(e) {
+  var miniNav = document.querySelector(".mini-nav-wrapper");
+  var miniNavLink = document.querySelector(".mini-nav-link");
+  var buttonWrapper = document.querySelector(".ctrl-btn-wrapper");
+  var activeNav = document.querySelector(".active-nav");
+  miniNav.addEventListener("mouseover", function() {
+    miniNav.style.height = "auto";
+    activeNav.style.display = "none";
+    miniNavLink.style.display = "block";
+  });
+  miniNav.addEventListener("mouseout", function() {
+    miniNav.style.height = "2.6rem";
+    activeNav.style.display = "block";
+    miniNavLink.style.display = "none";
+  });
+  miniNav.addEventListener("click", function(e) {
+    const clicked = e.target.closest(".mini-nav-link");
+    if (!clicked) return;
+    setActiveSectionLinkBtns(clicked.classList[1]);
+  });
+  buttonWrapper.addEventListener("click", function(e) {
+    const clicked = e.target.closest(".ctrl-btn");
+    if (!clicked) return;
+    console.log(clicked);
+  });
+  var setActiveSectionLinkBtns = function(section) {
+    allSections.forEach(function(el) {
+      el.classList.remove("active");
+      if (el.classList.contains(section)) {
+        el.classList.add("active");
+      }
+    });
+    allNavLinks.forEach(function(el) {
+      activeNav.innerHTML = section;
+      el.classList.remove("active");
+      if (el.classList.contains(section)) {
+        el.classList.add("active");
+      }
+    });
+    allCtrlBtns.forEach(function(el) {
+      el.classList.remove("active");
+      if (el.classList.contains(section)) {
+        el.classList.add("active");
+      }
+    });
+  };
+  sectionFeatures.addEventListener("wheel", function(e) {
     if (e.deltaY > 0) {
-      touchSection2.classList.add("active");
-      touchSection1.classList.remove("active");
+      setActiveSectionLinkBtns("explode");
     }
   });
-  touchSection1.addEventListener("touchstart", function(e) {
+  sectionFeatures.addEventListener("touchstart", function(e) {
     startY = e.changedTouches[0].screenY;
   });
-  touchSection1.addEventListener("touchend", function(e) {
+  sectionFeatures.addEventListener("touchend", function(e) {
     endY = e.changedTouches[0].screenY;
     if (endY < startY) {
-      touchSection2.classList.add("active");
-      touchSection1.classList.remove("active");
+      sectionExplode.classList.add("active");
+      sectionFeatures.classList.remove("active");
     } else if (endY > startY) {
-      touchSection1.classList.add("active");
-      touchSection2.classList.remove("active");
+      sectionFeatures.classList.add("active");
+      sectionExplode.classList.remove("active");
     }
   });
-  touchSection2.addEventListener("wheel", function(e) {
+  sectionExplode.addEventListener("wheel", function(e) {
     if (e.deltaY < 0) {
-      touchSection1.classList.add("active");
-      touchSection2.classList.remove("active");
+      setActiveSectionLinkBtns("features");
     }
   });
-  touchSection2.addEventListener("touchend", function(e) {
+  sectionExplode.addEventListener("touchend", function(e) {
     endY = e.changedTouches[0].screenY;
     if (endY > startY) {
-      touchSection1.classList.add("active");
-      touchSection2.classList.remove("active");
+      sectionFeatures.classList.add("active");
+      sectionExplode.classList.remove("active");
     } else if (endY < startY) {
-      touchSection2.classList.add("active");
-      touchSection1.classList.remove("active");
+      sectionExplode.classList.add("active");
+      sectionFeatures.classList.remove("active");
     }
+  });
+  sectionExplode.addEventListener("touchmove", function(e) {
+    sectionFeatures.classList.add("active");
+    sectionExplode.classList.remove("active");
   });
   mapBtnContainer.addEventListener("click", function(e) {
     const clicked = e.target.closest(".button-vid");
