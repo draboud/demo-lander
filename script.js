@@ -56,7 +56,7 @@ const dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
 let explodeFlag = false;
 //...........................................................
 //SIZING & SNAPING
-console.log("testing 11!");
+console.log("testing 12!");
 const vidSection = document.querySelector(".section_spacing");
 const contactSection = document.querySelector(".section_contact.snap");
 // const scrollBtnContainer = document.querySelector(".btn-scroll-container");
@@ -143,9 +143,11 @@ sectionFeatures.addEventListener("wheel", function (e) {
   }
 });
 sectionFeatures.addEventListener("touchstart", function (e) {
+  // e.preventDefault();
   startY = e.changedTouches[0].screenY;
 });
 sectionFeatures.addEventListener("touchend", function (e) {
+  // e.preventDefault();
   endY = e.changedTouches[0].screenY;
   if (endY < startY) {
     // sectionExplode.classList.add("active");
@@ -164,7 +166,12 @@ sectionExplode.addEventListener("wheel", function (e) {
     // sectionExplode.classList.remove("active");
   }
 });
+sectionExplode.addEventListener("touchstart", function (e) {
+  // e.preventDefault();
+  startY = e.changedTouches[0].screenY;
+});
 sectionExplode.addEventListener("touchend", function (e) {
+  // e.preventDefault();
   endY = e.changedTouches[0].screenY;
   if (endY > startY) {
     // sectionFeatures.classList.add("active");
@@ -175,10 +182,6 @@ sectionExplode.addEventListener("touchend", function (e) {
     // sectionFeatures.classList.remove("active");
     setActiveSectionLinkBtns("explode");
   }
-});
-sectionExplode.addEventListener("touchmove", function (e) {
-  sectionFeatures.classList.add("active");
-  sectionExplode.classList.remove("active");
 });
 
 // vidSection.addEventListener("touchstart", function (e) {

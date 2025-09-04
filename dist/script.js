@@ -54,7 +54,7 @@
   var dotsExplodeWrapper = document.querySelector(".dots-explode-wrapper");
   var dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
   var explodeFlag = false;
-  console.log("testing 11!");
+  console.log("testing 12!");
   var vidSection = document.querySelector(".section_spacing");
   var contactSection = document.querySelector(".section_contact.snap");
   var btnScroll1 = document.querySelector(".button-scroll.scroll1");
@@ -134,6 +134,9 @@
       setActiveSectionLinkBtns("features");
     }
   });
+  sectionExplode.addEventListener("touchstart", function(e) {
+    startY = e.changedTouches[0].screenY;
+  });
   sectionExplode.addEventListener("touchend", function(e) {
     endY = e.changedTouches[0].screenY;
     if (endY > startY) {
@@ -141,10 +144,6 @@
     } else if (endY < startY) {
       setActiveSectionLinkBtns("explode");
     }
-  });
-  sectionExplode.addEventListener("touchmove", function(e) {
-    sectionFeatures.classList.add("active");
-    sectionExplode.classList.remove("active");
   });
   mapBtnContainer.addEventListener("click", function(e) {
     const clicked = e.target.closest(".button-vid");
