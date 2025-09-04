@@ -54,7 +54,7 @@
   var dotsExplodeWrapper = document.querySelector(".dots-explode-wrapper");
   var dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
   var explodeFlag = false;
-  console.log("testing 12!");
+  console.log("testing 13!");
   var vidSection = document.querySelector(".section_spacing");
   var contactSection = document.querySelector(".section_contact.snap");
   var btnScroll1 = document.querySelector(".button-scroll.scroll1");
@@ -101,6 +101,7 @@
     });
     allNavLinks.forEach(function(el) {
       activeNav.innerHTML = section;
+      miniNavLink.style.display = "none";
       el.classList.remove("active");
       if (el.classList.contains(section)) {
         el.classList.add("active");

@@ -56,7 +56,7 @@ const dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
 let explodeFlag = false;
 //...........................................................
 //SIZING & SNAPING
-console.log("testing 12!");
+console.log("testing 13!");
 const vidSection = document.querySelector(".section_spacing");
 const contactSection = document.querySelector(".section_contact.snap");
 // const scrollBtnContainer = document.querySelector(".btn-scroll-container");
@@ -116,6 +116,7 @@ const setActiveSectionLinkBtns = function (section) {
   });
   allNavLinks.forEach(function (el) {
     activeNav.innerHTML = section;
+    miniNavLink.style.display = "none";
     el.classList.remove("active");
     if (el.classList.contains(section)) {
       el.classList.add("active");
