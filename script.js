@@ -66,6 +66,8 @@ const btnScroll2 = document.querySelector(".button-scroll.scroll2");
 const touchSection1 = document.querySelector(".section_touch-event.first");
 const touchSection2 = document.querySelector(".section_touch-event.second");
 const testDiv = document.querySelector(".test-div");
+let startY;
+let endY;
 
 // scrollBtnContainer.addEventListener("click", function (e) {
 //   const clicked = e.target.closest(".button-scroll");
@@ -86,9 +88,18 @@ touchSection1.addEventListener("wheel", function (e) {
     touchSection1.classList.remove("active");
   }
 });
-touchSection1.addEventListener("touchmove", function () {
-  touchSection2.classList.add("active");
-  touchSection1.classList.remove("active");
+touchSection1.addEventListener("touchstart", function (e) {
+  startY = e.changedTouches[0].screenY;
+});
+touchSection1.addEventListener("touchend", function (e) {
+  endY = e.changedTouches[0].screenY;
+  if (endY < startY) {
+    touchSection2.classList.add("active");
+    touchSection1.classList.remove("active");
+  } else if (endY > startY) {
+    touchSection1.classList.add("active");
+    touchSection2.classList.remove("active");
+  }
 });
 touchSection2.addEventListener("wheel", function (e) {
   if (e.deltaY < 0) {
@@ -96,10 +107,20 @@ touchSection2.addEventListener("wheel", function (e) {
     touchSection2.classList.remove("active");
   }
 });
-touchSection2.addEventListener("touchmove", function (e) {
-  touchSection1.classList.add("active");
-  touchSection2.classList.remove("active");
+touchSection2.addEventListener("touchend", function (e) {
+  endY = e.changedTouches[0].screenY;
+  if (endY > startY) {
+    touchSection1.classList.add("active");
+    touchSection2.classList.remove("active");
+  } else if (endY < startY) {
+    touchSection2.classList.add("active");
+    touchSection1.classList.remove("active");
+  }
 });
+// touchSection2.addEventListener("touchmove", function (e) {
+//   touchSection1.classList.add("active");
+//   touchSection2.classList.remove("active");
+// });
 
 // vidSection.addEventListener("touchstart", function (e) {
 //   e.preventDefault();
