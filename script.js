@@ -56,12 +56,15 @@ const dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
 let explodeFlag = false;
 //...........................................................
 //SIZING & SNAPING
-console.log("testing 3!");
+console.log("testing 5!");
 const vidSection = document.querySelector(".section_spacing");
 const contactSection = document.querySelector(".section_contact.snap");
 const scrollBtnContainer = document.querySelector(".btn-scroll-container");
 const btnScroll1 = document.querySelector(".button-scroll.scroll1");
 const btnScroll2 = document.querySelector(".button-scroll.scroll2");
+
+const touchSection1 = document.querySelector(".section_touch-event.first");
+const touchSection2 = document.querySelector(".section_touch-event.second");
 
 // scrollBtnContainer.addEventListener("click", function (e) {
 //   const clicked = e.target.closest(".button-scroll");
@@ -71,12 +74,18 @@ const btnScroll2 = document.querySelector(".button-scroll.scroll2");
 //   console.log("button 1 clicked");
 //   document.documentElement.scrollTo(0, 250);
 // });
-// vidSection.addEventListener("wheel", function (e) {
-//   if (e.deltaY > 0) {
-//     contactSection.classList.add("active");
-//     vidSection.classList.remove("active");
-//   }
-// });
+touchSection1.addEventListener("wheel", function (e) {
+  if (e.deltaY > 0) {
+    touchSection2.classList.add("active");
+    touchSection1.classList.remove("active");
+  }
+});
+touchSection2.addEventListener("wheel", function (e) {
+  if (e.deltaY < 0) {
+    touchSection1.classList.add("active");
+    touchSection2.classList.remove("active");
+  }
+});
 // vidSection.addEventListener("touchstart", function (e) {
 //   e.preventDefault();
 //   document.querySelector(".screen-sizer.m-l").innerHTML = "hi!";

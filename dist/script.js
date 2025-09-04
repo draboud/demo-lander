@@ -54,12 +54,26 @@
   var dotsExplodeWrapper = document.querySelector(".dots-explode-wrapper");
   var dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
   var explodeFlag = false;
-  console.log("testing 3!");
+  console.log("testing 5!");
   var vidSection = document.querySelector(".section_spacing");
   var contactSection = document.querySelector(".section_contact.snap");
   var scrollBtnContainer = document.querySelector(".btn-scroll-container");
   var btnScroll1 = document.querySelector(".button-scroll.scroll1");
   var btnScroll2 = document.querySelector(".button-scroll.scroll2");
+  var touchSection1 = document.querySelector(".section_touch-event.first");
+  var touchSection2 = document.querySelector(".section_touch-event.second");
+  touchSection1.addEventListener("wheel", function(e) {
+    if (e.deltaY > 0) {
+      touchSection2.classList.add("active");
+      touchSection1.classList.remove("active");
+    }
+  });
+  touchSection2.addEventListener("wheel", function(e) {
+    if (e.deltaY < 0) {
+      touchSection1.classList.add("active");
+      touchSection2.classList.remove("active");
+    }
+  });
   mapBtnContainer.addEventListener("click", function(e) {
     const clicked = e.target.closest(".button-vid");
     if (!clicked) return;
