@@ -134,6 +134,10 @@
     });
     allNavLinksTouch.forEach(function(el) {
       el.style.display = "none";
+      el.classList.remove("active");
+      if (el.classList.contains(section)) {
+        el.classList.add("active");
+      }
     });
     miniNavTouch.style.height = "2.6rem";
     activeNavTouch.style.display = "block";
@@ -161,14 +165,17 @@
   sectionFeatures.addEventListener("touchend", function(e) {
     endY = e.changedTouches[0].screenY;
     if (endY < startY) {
-      setActiveSectionLinkBtns("explode");
+      activeSection = "explode";
+      setActiveSectionLinkBtns(activeSection);
     } else if (endY > startY) {
-      setActiveSectionLinkBtns("features");
+      activeSection = "features";
+      setActiveSectionLinkBtns(activeSection);
     }
   });
   sectionExplode.addEventListener("wheel", function(e) {
     if (e.deltaY < 0) {
-      setActiveSectionLinkBtns("features");
+      activeSection = "features";
+      setActiveSectionLinkBtns(activeSection);
     }
   });
   sectionExplode.addEventListener("touchstart", function(e) {
@@ -177,9 +184,11 @@
   sectionExplode.addEventListener("touchend", function(e) {
     endY = e.changedTouches[0].screenY;
     if (endY > startY) {
-      setActiveSectionLinkBtns("features");
+      activeSection = "features";
+      setActiveSectionLinkBtns(activeSection);
     } else if (endY < startY) {
-      setActiveSectionLinkBtns("explode");
+      activeSection = "explode";
+      setActiveSectionLinkBtns(activeSection);
     }
   });
   mapBtnContainer.addEventListener("click", function(e) {
