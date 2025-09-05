@@ -56,7 +56,7 @@ const dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
 let explodeFlag = false;
 //...........................................................
 //SIZING & SNAPING
-console.log("testing 17!");
+console.log("testing 18!");
 const vidSection = document.querySelector(".section_spacing");
 const contactSection = document.querySelector(".section_contact.snap");
 // const scrollBtnContainer = document.querySelector(".btn-scroll-container");
@@ -67,11 +67,13 @@ const sectionFeatures = document.querySelector(".section_action.features");
 const sectionExplode = document.querySelector(".section_action.explode");
 const allSections = document.querySelectorAll(".section_action");
 const allNavLinks = document.querySelectorAll(".mini-nav-link");
+const allNavLinksTouch = document.querySelectorAll(".mini-nav-link-touch");
 const allCtrlBtns = document.querySelectorAll(".ctrl-btn");
 const mainWrapper = document.querySelector(".main-wrapper");
 const testDiv = document.querySelector(".test-div");
 let startY;
 let endY;
+let activeSection = "features";
 // scrollBtnContainer.addEventListener("click", function (e) {
 //   const clicked = e.target.closest(".button-scroll");
 //   // if (!clicked) return;
@@ -81,59 +83,31 @@ let endY;
 //...........................................................
 //NAVIGATION
 const miniNav = document.querySelector(".mini-nav-wrapper");
+const miniNavTouch = document.querySelector(".mini-nav-wrapper.touch");
 const miniNavLink = document.querySelector(".mini-nav-link");
+const miniNavLinkTouch = document.querySelector(".mini-nav-link-touch");
 const buttonWrapper = document.querySelector(".ctrl-btn-wrapper");
 const activeNav = document.querySelector(".active-nav");
+const activeNavTouch = document.querySelector(".active-nav.touch");
 let usingTouch = false;
-// miniNav.addEventListener("click", function () {
-//   console.log("mouse click");
-//   miniNav.style.height = "auto";
-//   activeNav.style.display = "none";
-//   // miniNavLink.style.display = "block";
-//   allNavLinks.forEach(function (el) {
-//     el.style.display = "block";
-//   });
-// });
 
-// activeNav.addEventListener("click", function () {
-//   console.log("hi");
-// });
-window.addEventListener("touchend", function () {
-  console.log("touch end");
-  usingTouch = true;
-  allNavLinks.forEach(function (el) {
-    // setTimeout(() => (el.style["pointer-events"] = "auto"), 100);
-
-    // el.style.display = "none";
-    // miniNav.mouseleave();
-    // miniNav.style["pointer-events"] = "none";
+miniNavTouch.addEventListener("click", function () {
+  miniNavTouch.style.height = "auto";
+  activeNavTouch.style.display = "none";
+  allNavLinksTouch.forEach(function (el) {
     el.classList.remove("active");
-    if (el.classList.contains(section)) {
+    if (el.classList.contains(activeSection)) {
       el.classList.add("active");
     }
-    miniNav.style.height = "2.6rem";
-    activeNav.style.display = "block";
-  });
-});
-miniNav.addEventListener("touchstart", function () {
-  usingTouch = true;
-  miniNav.style.height = "auto";
-  activeNav.style.display = "none";
-  // miniNavLink.style.display = "block";
-  allNavLinks.forEach(function (el) {
     el.style["pointer-events"] = "none";
     setTimeout(() => (el.style["pointer-events"] = "auto"), 100);
     el.style.display = "block";
-    if (el.classList.contains(section)) {
-      el.classList.add("active");
-    }
   });
 });
+
 miniNav.addEventListener("mouseenter", function () {
-  // console.log("mouse enter");
   miniNav.style.height = "auto";
   activeNav.style.display = "none";
-  // miniNavLink.style.display = "block";
   allNavLinks.forEach(function (el) {
     el.style["pointer-events"] = "none";
     setTimeout(() => (el.style["pointer-events"] = "auto"), 100);
@@ -141,7 +115,6 @@ miniNav.addEventListener("mouseenter", function () {
   });
 });
 miniNav.addEventListener("mouseleave", function () {
-  // console.log("left");
   miniNav.style.height = "2.6rem";
   activeNav.style.display = "block";
   miniNavLink.style.display = "none";
@@ -150,8 +123,14 @@ miniNav.addEventListener("mouseleave", function () {
 miniNav.addEventListener("click", function (e) {
   const clicked = e.target.closest(".mini-nav-link");
   if (!clicked) return;
-  setActiveSectionLinkBtns(clicked.classList[1]);
-  console.log(clicked.classList[1]);
+  activeSection = clicked.classList[1];
+  setActiveSectionLinkBtns(activeSection);
+});
+miniNavTouch.addEventListener("click", function (e) {
+  const clicked = e.target.closest(".mini-nav-link-touch");
+  if (!clicked) return;
+  activeSection = clicked.classList[1];
+  setActiveSectionLinkBtns(activeSection);
 });
 buttonWrapper.addEventListener("click", function (e) {
   const clicked = e.target.closest(".ctrl-btn");
@@ -161,10 +140,8 @@ buttonWrapper.addEventListener("click", function (e) {
 
 const setActiveSectionLinkBtns = function (section) {
   activeNav.innerHTML = section;
+  activeNavTouch.innerHTML = section;
   allNavLinks.forEach(function (el) {
-    // el.style.display = "none";
-    // miniNav.mouseleave();
-    // miniNav.style["pointer-events"] = "none";
     el.classList.remove("active");
     if (el.classList.contains(section)) {
       el.classList.add("active");
@@ -172,6 +149,12 @@ const setActiveSectionLinkBtns = function (section) {
     miniNav.style.height = "2.6rem";
     activeNav.style.display = "block";
   });
+  allNavLinksTouch.forEach(function (el) {
+    el.style.display = "none";
+  });
+  miniNavTouch.style.height = "2.6rem";
+  activeNavTouch.style.display = "block";
+
   allSections.forEach(function (el) {
     el.classList.remove("active");
     if (el.classList.contains(section)) {
@@ -184,77 +167,40 @@ const setActiveSectionLinkBtns = function (section) {
       el.classList.add("active");
     }
   });
-  // const mouseLeaveEvent = new MouseEvent("mouseleave");
-  // miniNav.dispatchEvent(mouseLeaveEvent);
 };
 //...........................................................
-
-// document.addEventListener("touchmove", function () {
-//   console.log("touch!");
-//   // document.querySelector(".screen-sizer.m-p").innerHTML = "hi";
-//   testDiv.style.display = "block";
-// });
 sectionFeatures.addEventListener("wheel", function (e) {
   if (e.deltaY > 0) {
     setActiveSectionLinkBtns("explode");
-    // sectionExplode.classList.add("active");
-    // sectionFeatures.classList.remove("active");
   }
 });
 sectionFeatures.addEventListener("touchstart", function (e) {
-  // e.preventDefault();
   startY = e.changedTouches[0].screenY;
 });
 sectionFeatures.addEventListener("touchend", function (e) {
-  // e.preventDefault();
   endY = e.changedTouches[0].screenY;
   if (endY < startY) {
-    // sectionExplode.classList.add("active");
-    // sectionFeatures.classList.remove("active");
     setActiveSectionLinkBtns("explode");
   } else if (endY > startY) {
-    // sectionFeatures.classList.add("active");
-    // sectionExplode.classList.remove("active");
     setActiveSectionLinkBtns("features");
   }
 });
 sectionExplode.addEventListener("wheel", function (e) {
   if (e.deltaY < 0) {
     setActiveSectionLinkBtns("features");
-    // sectionFeatures.classList.add("active");
-    // sectionExplode.classList.remove("active");
   }
 });
 sectionExplode.addEventListener("touchstart", function (e) {
-  // e.preventDefault();
   startY = e.changedTouches[0].screenY;
 });
 sectionExplode.addEventListener("touchend", function (e) {
-  // e.preventDefault();
   endY = e.changedTouches[0].screenY;
   if (endY > startY) {
-    // sectionFeatures.classList.add("active");
-    // sectionExplode.classList.remove("active");
     setActiveSectionLinkBtns("features");
   } else if (endY < startY) {
-    // sectionExplode.classList.add("active");
-    // sectionFeatures.classList.remove("active");
     setActiveSectionLinkBtns("explode");
   }
 });
-
-// vidSection.addEventListener("touchstart", function (e) {
-//   e.preventDefault();
-//   document.querySelector(".screen-sizer.m-l").innerHTML = "hi!";
-//   document.querySelector(".screen-sizer.m-p").innerHTML = "hi!";
-// });
-// contactSection.addEventListener("wheel", function (e) {
-//   if (e.deltaY < 0) {
-//     vidSection.classList.add("active");
-//     contactSection.classList.remove("active");
-//   }
-// });
-
 //...........................................................
 //MAP
 mapBtnContainer.addEventListener("click", function (e) {

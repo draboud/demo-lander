@@ -54,7 +54,7 @@
   var dotsExplodeWrapper = document.querySelector(".dots-explode-wrapper");
   var dotsAssembleWrapper = document.querySelector(".dots-assemble-wrapper");
   var explodeFlag = false;
-  console.log("testing 17!");
+  console.log("testing 18!");
   var vidSection = document.querySelector(".section_spacing");
   var contactSection = document.querySelector(".section_contact.snap");
   var btnScroll1 = document.querySelector(".button-scroll.scroll1");
@@ -63,39 +63,31 @@
   var sectionExplode = document.querySelector(".section_action.explode");
   var allSections = document.querySelectorAll(".section_action");
   var allNavLinks = document.querySelectorAll(".mini-nav-link");
+  var allNavLinksTouch = document.querySelectorAll(".mini-nav-link-touch");
   var allCtrlBtns = document.querySelectorAll(".ctrl-btn");
   var mainWrapper = document.querySelector(".main-wrapper");
   var testDiv = document.querySelector(".test-div");
   var startY;
   var endY;
+  var activeSection = "features";
   var miniNav = document.querySelector(".mini-nav-wrapper");
+  var miniNavTouch = document.querySelector(".mini-nav-wrapper.touch");
   var miniNavLink = document.querySelector(".mini-nav-link");
+  var miniNavLinkTouch = document.querySelector(".mini-nav-link-touch");
   var buttonWrapper = document.querySelector(".ctrl-btn-wrapper");
   var activeNav = document.querySelector(".active-nav");
-  var usingTouch = false;
-  window.addEventListener("touchend", function() {
-    console.log("touch end");
-    usingTouch = true;
-    allNavLinks.forEach(function(el) {
+  var activeNavTouch = document.querySelector(".active-nav.touch");
+  miniNavTouch.addEventListener("click", function() {
+    miniNavTouch.style.height = "auto";
+    activeNavTouch.style.display = "none";
+    allNavLinksTouch.forEach(function(el) {
       el.classList.remove("active");
-      if (el.classList.contains(section)) {
+      if (el.classList.contains(activeSection)) {
         el.classList.add("active");
       }
-      miniNav.style.height = "2.6rem";
-      activeNav.style.display = "block";
-    });
-  });
-  miniNav.addEventListener("touchstart", function() {
-    usingTouch = true;
-    miniNav.style.height = "auto";
-    activeNav.style.display = "none";
-    allNavLinks.forEach(function(el) {
       el.style["pointer-events"] = "none";
       setTimeout(() => el.style["pointer-events"] = "auto", 100);
       el.style.display = "block";
-      if (el.classList.contains(section)) {
-        el.classList.add("active");
-      }
     });
   });
   miniNav.addEventListener("mouseenter", function() {
@@ -115,33 +107,45 @@
   miniNav.addEventListener("click", function(e) {
     const clicked = e.target.closest(".mini-nav-link");
     if (!clicked) return;
-    setActiveSectionLinkBtns(clicked.classList[1]);
-    console.log(clicked.classList[1]);
+    activeSection = clicked.classList[1];
+    setActiveSectionLinkBtns(activeSection);
+  });
+  miniNavTouch.addEventListener("click", function(e) {
+    const clicked = e.target.closest(".mini-nav-link-touch");
+    if (!clicked) return;
+    activeSection = clicked.classList[1];
+    setActiveSectionLinkBtns(activeSection);
   });
   buttonWrapper.addEventListener("click", function(e) {
     const clicked = e.target.closest(".ctrl-btn");
     if (!clicked) return;
     console.log(clicked);
   });
-  var setActiveSectionLinkBtns = function(section2) {
-    activeNav.innerHTML = section2;
+  var setActiveSectionLinkBtns = function(section) {
+    activeNav.innerHTML = section;
+    activeNavTouch.innerHTML = section;
     allNavLinks.forEach(function(el) {
       el.classList.remove("active");
-      if (el.classList.contains(section2)) {
+      if (el.classList.contains(section)) {
         el.classList.add("active");
       }
       miniNav.style.height = "2.6rem";
       activeNav.style.display = "block";
     });
+    allNavLinksTouch.forEach(function(el) {
+      el.style.display = "none";
+    });
+    miniNavTouch.style.height = "2.6rem";
+    activeNavTouch.style.display = "block";
     allSections.forEach(function(el) {
       el.classList.remove("active");
-      if (el.classList.contains(section2)) {
+      if (el.classList.contains(section)) {
         el.classList.add("active");
       }
     });
     allCtrlBtns.forEach(function(el) {
       el.classList.remove("active");
-      if (el.classList.contains(section2)) {
+      if (el.classList.contains(section)) {
         el.classList.add("active");
       }
     });
