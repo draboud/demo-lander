@@ -213,21 +213,21 @@ const PlayActiveDotsVideo = function () {
 };
 //...........................................................
 //SIZING & SNAPING
-const vidSection = document.querySelector(".section_spacing");
-const contactSection = document.querySelector(".section_contact.snap");
-const btnScroll1 = document.querySelector(".button-scroll.scroll1");
-const btnScroll2 = document.querySelector(".button-scroll.scroll2");
-const sectionFeatures = document.querySelector(".section_action.features");
-const sectionExplode = document.querySelector(".section_action.explode");
-const allSections = document.querySelectorAll(".section_action");
-const allNavLinks = document.querySelectorAll(".mini-nav-link");
-const allNavLinksTouch = document.querySelectorAll(".mini-nav-link-touch");
-const allCtrlBtns = document.querySelectorAll(".ctrl-btn");
-const mainWrapper = document.querySelector(".main-wrapper");
-const testDiv = document.querySelector(".test-div");
-let startY;
-let endY;
-let activeSection = "features";
+// const vidSection = document.querySelector(".section_spacing");
+// const contactSection = document.querySelector(".section_contact.snap");
+// const btnScroll1 = document.querySelector(".button-scroll.scroll1");
+// const btnScroll2 = document.querySelector(".button-scroll.scroll2");
+// const sectionFeatures = document.querySelector(".section_action.features");
+// const sectionExplode = document.querySelector(".section_action.explode");
+// const allSections = document.querySelectorAll(".section_action");
+// const allNavLinks = document.querySelectorAll(".mini-nav-link");
+// const allNavLinksTouch = document.querySelectorAll(".mini-nav-link-touch");
+// const allCtrlBtns = document.querySelectorAll(".ctrl-btn");
+// const mainWrapper = document.querySelector(".main-wrapper");
+// const testDiv = document.querySelector(".test-div");
+// let startY;
+// let endY;
+// let activeSection = "features";
 //...........................................................
 //NAVIGATION
 // const miniNav = document.querySelector(".mini-nav-wrapper");

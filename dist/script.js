@@ -1,49 +1,56 @@
 (() => {
   // script.js
-  var ctrlBtnWrapper = document.querySelector(".ctrl-btn-wrapper");
-  var allChainDivs = document.querySelectorAll(".chain-vid-div");
-  var allChainDivEnds = document.querySelectorAll(".chain-vid-div-end");
-  var allChainVids = document.querySelectorAll(".chain-vid");
-  var allChainVidEnds = document.querySelectorAll(".chain-vid-end");
-  var chainVidFlag = "first";
-  var endFlag = false;
-  ctrlBtnWrapper.addEventListener("click", function(e) {
-    const clicked = e.target.closest(".chain-btn");
-    chainVidFlag = clicked.classList[1];
-    ActivateEndChainVid();
+  var dotBtnContainer = document.querySelector(".btn-map-container");
+  var allDotAllWrappers = document.querySelectorAll(".dots-all-wrapper");
+  var vidExplode = document.querySelector(".vid-explode");
+  var vidAssemble = document.querySelector(".vid-assemble");
+  var allDotVids = [vidExplode, vidAssemble];
+  var dotExplodeButton = document.querySelector(".button-vid.explode");
+  var dotAssembleButton = document.querySelector(".button-vid.assemble");
+  var allDotButtons = [dotExplodeButton, dotAssembleButton];
+  var activeDotsWrap;
+  var dotsFlag;
+  dotBtnContainer.addEventListener("click", function(e) {
+    const clicked = e.target.closest(".button-vid");
+    dotsFlag = clicked.classList[1];
+    if (!clicked) return;
+    vidExplode.currentTime = 0;
+    vidAssemble.currentTime = 0;
+    SetActiveDotsWrapper(dotsFlag);
+    PlayActiveDotsVideo();
   });
-  allChainVidEnds.forEach(function(el) {
+  allDotVids.forEach(function(el) {
     el.addEventListener("ended", function() {
-      ActivateStartChainVid();
+      if (activeDotsWrap.classList.contains("explode")) {
+        SetActiveDotsWrapper("assemble");
+      } else {
+        SetActiveDotsWrapper("explode");
+      }
+      allDotButtons.forEach(function(el2) {
+        el2.classList.remove("active");
+        if (el2.classList.contains(dotsFlag)) {
+          el2.classList.add("active");
+        }
+      });
+      ActivateDotsOrVideo("dots_wrap", "video-wrapper");
     });
   });
-  var ActivateStartChainVid = function() {
-    allChainDivs.forEach(function(el) {
+  var SetActiveDotsWrapper = function(value) {
+    dotsFlag = value;
+    allDotAllWrappers.forEach(function(el) {
       el.classList.remove("active");
-      if (el.classList.contains(chainVidFlag)) {
+      if (el.classList.contains(dotsFlag)) {
         el.classList.add("active");
-        endFlag = chainVidFlag;
-        PlayChainVid(el.querySelector(".chain-vid"));
+        activeDotsWrap = el;
       }
     });
   };
-  var ActivateEndChainVid = function() {
-    if (endFlag) {
-      allChainDivEnds.forEach(function(el) {
-        el.classList.remove("active");
-        if (el.classList.contains(endFlag)) {
-          el.classList.add("active");
-          PlayChainVid(el.querySelector(".chain-vid-end"));
-        }
-      });
-    } else {
-      ActivateStartChainVid();
-    }
+  var ActivateDotsOrVideo = function(activate, deactivate) {
+    activeDotsWrap.querySelector(`.${activate}.${dotsFlag}`).classList.add("active");
+    activeDotsWrap.querySelector(`.${deactivate}.${dotsFlag}`).classList.remove("active");
   };
-  var PlayChainVid = function(value) {
-    allChainVids.forEach(function(el) {
-      el.currentTime = 0;
-    });
-    value.play();
+  var PlayActiveDotsVideo = function() {
+    ActivateDotsOrVideo("video-wrapper", "dots_wrap");
+    document.querySelector(`.vid-${dotsFlag}`).play();
   };
 })();
