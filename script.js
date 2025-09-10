@@ -1,62 +1,62 @@
-//...........................................................
-//SIZING & SNAPING
-const ctrlBtnWrapper = document.querySelector(".ctrl-btn-wrapper");
-const allChainDivs = document.querySelectorAll(".chain-vid-div");
-const allChainDivEnds = document.querySelectorAll(".chain-vid-div-end");
-const allChainVids = document.querySelectorAll(".chain-vid");
-const allChainVidEnds = document.querySelectorAll(".chain-vid-end");
-let chainVidFlag = "first";
-let endFlag = false;
+// //...........................................................
+// //VIDEO CHAINING
+// const ctrlBtnWrapper = document.querySelector(".ctrl-btn-wrapper");
+// const allChainDivs = document.querySelectorAll(".chain-vid-div");
+// const allChainDivEnds = document.querySelectorAll(".chain-vid-div-end");
+// const allChainVids = document.querySelectorAll(".chain-vid");
+// const allChainVidEnds = document.querySelectorAll(".chain-vid-end");
+// let chainVidFlag = "first";
+// let endFlag = false;
 
-ctrlBtnWrapper.addEventListener("click", function (e) {
-  const clicked = e.target.closest(".chain-btn");
-  chainVidFlag = clicked.classList[1];
-  ActivateEndChainVid();
-});
-allChainVidEnds.forEach(function (el) {
-  el.addEventListener("ended", function () {
-    ActivateStartChainVid();
-  });
-});
-const DeactivateAll = function () {
-  allChainDivs.forEach(function (el) {
-    el.classList.remove("active");
-  });
-  allChainDivEnds.forEach(function (el) {
-    el.classList.remove("active");
-  });
-};
-const ActivateStartChainVid = function () {
-  // DeactivateAll();
-  allChainDivs.forEach(function (el) {
-    el.classList.remove("active");
-    if (el.classList.contains(chainVidFlag)) {
-      el.classList.add("active");
-      endFlag = chainVidFlag;
-      PlayChainVid(el.querySelector(".chain-vid"));
-    }
-  });
-};
-const ActivateEndChainVid = function () {
-  // DeactivateAll();
-  if (endFlag) {
-    allChainDivEnds.forEach(function (el) {
-      el.classList.remove("active");
-      if (el.classList.contains(endFlag)) {
-        el.classList.add("active");
-        PlayChainVid(el.querySelector(".chain-vid-end"));
-      }
-    });
-  } else {
-    ActivateStartChainVid();
-  }
-};
-const PlayChainVid = function (value) {
-  allChainVids.forEach(function (el) {
-    el.currentTime = 0;
-  });
-  value.play();
-};
+// ctrlBtnWrapper.addEventListener("click", function (e) {
+//   const clicked = e.target.closest(".chain-btn");
+//   chainVidFlag = clicked.classList[1];
+//   ActivateEndChainVid();
+// });
+// allChainVidEnds.forEach(function (el) {
+//   el.addEventListener("ended", function () {
+//     ActivateStartChainVid();
+//   });
+// });
+// const DeactivateAll = function () {
+//   allChainDivs.forEach(function (el) {
+//     el.classList.remove("active");
+//   });
+//   allChainDivEnds.forEach(function (el) {
+//     el.classList.remove("active");
+//   });
+// };
+// const ActivateStartChainVid = function () {
+//   // DeactivateAll();
+//   allChainDivs.forEach(function (el) {
+//     el.classList.remove("active");
+//     if (el.classList.contains(chainVidFlag)) {
+//       el.classList.add("active");
+//       endFlag = chainVidFlag;
+//       PlayChainVid(el.querySelector(".chain-vid"));
+//     }
+//   });
+// };
+// const ActivateEndChainVid = function () {
+//   // DeactivateAll();
+//   if (endFlag) {
+//     allChainDivEnds.forEach(function (el) {
+//       el.classList.remove("active");
+//       if (el.classList.contains(endFlag)) {
+//         el.classList.add("active");
+//         PlayChainVid(el.querySelector(".chain-vid-end"));
+//       }
+//     });
+//   } else {
+//     ActivateStartChainVid();
+//   }
+// };
+// const PlayChainVid = function (value) {
+//   allChainVids.forEach(function (el) {
+//     el.currentTime = 0;
+//   });
+//   value.play();
+// };
 //...........................................................
 // //VIDEO
 // const vidRotation = document.querySelector(".vid-rotation");
@@ -151,84 +151,84 @@ const PlayChainVid = function (value) {
 //     SetActiveVidAndPlay("rotation");
 //   }, 3000);
 // };
-// //...........................................................
-// //MAP DOTS
-// const dotBtnContainer = document.querySelector(".btn-map-container");
-// const allDotAllWrappers = document.querySelectorAll(".dots-all-wrapper");
-// const vidExplode = document.querySelector(".vid-explode");
-// const vidAssemble = document.querySelector(".vid-assemble");
-// const allDotVids = [vidExplode, vidAssemble];
-// const dotExplodeButton = document.querySelector(".button-vid.explode");
-// const dotAssembleButton = document.querySelector(".button-vid.assemble");
-// const allDotButtons = [dotExplodeButton, dotAssembleButton];
-// let activeDotsWrap;
-// let dotsFlag;
+//...........................................................
+//MAP DOTS
+const dotBtnContainer = document.querySelector(".btn-map-container");
+const allDotAllWrappers = document.querySelectorAll(".dots-all-wrapper");
+const vidExplode = document.querySelector(".vid-explode");
+const vidAssemble = document.querySelector(".vid-assemble");
+const allDotVids = [vidExplode, vidAssemble];
+const dotExplodeButton = document.querySelector(".button-vid.explode");
+const dotAssembleButton = document.querySelector(".button-vid.assemble");
+const allDotButtons = [dotExplodeButton, dotAssembleButton];
+let activeDotsWrap;
+let dotsFlag;
 
-// dotBtnContainer.addEventListener("click", function (e) {
-//   const clicked = e.target.closest(".button-vid");
-//   dotsFlag = clicked.classList[1];
-//   if (!clicked) return;
-//   vidExplode.currentTime = 0;
-//   vidAssemble.currentTime = 0;
-//   SetActiveDotsWrapper(dotsFlag);
-//   PlayActiveDotsVideo();
-// });
-// allDotVids.forEach(function (el) {
-//   el.addEventListener("ended", function () {
-//     if (activeDotsWrap.classList.contains("explode")) {
-//       SetActiveDotsWrapper("assemble");
-//     } else {
-//       SetActiveDotsWrapper("explode");
-//     }
-//     allDotButtons.forEach(function (el) {
-//       el.classList.remove("active");
-//       if (el.classList.contains(dotsFlag)) {
-//         el.classList.add("active");
-//       }
-//     });
-//     ActivateDotsOrVideo("dots_wrap", "video-wrapper");
-//   });
-// });
-// const SetActiveDotsWrapper = function (value) {
-//   dotsFlag = value;
-//   allDotAllWrappers.forEach(function (el) {
-//     el.classList.remove("active");
-//     if (el.classList.contains(dotsFlag)) {
-//       el.classList.add("active");
-//       activeDotsWrap = el;
-//     }
-//   });
-// };
-// const ActivateDotsOrVideo = function (activate, deactivate) {
-//   activeDotsWrap
-//     .querySelector(`.${activate}.${dotsFlag}`)
-//     .classList.add("active");
-//   activeDotsWrap
-//     .querySelector(`.${deactivate}.${dotsFlag}`)
-//     .classList.remove("active");
-// };
-// const PlayActiveDotsVideo = function () {
-//   ActivateDotsOrVideo("video-wrapper", "dots_wrap");
-//   document.querySelector(`.vid-${dotsFlag}`).play();
-// };
-// //...........................................................
-// //SIZING & SNAPING
-// const vidSection = document.querySelector(".section_spacing");
-// const contactSection = document.querySelector(".section_contact.snap");
-// const btnScroll1 = document.querySelector(".button-scroll.scroll1");
-// const btnScroll2 = document.querySelector(".button-scroll.scroll2");
-// const sectionFeatures = document.querySelector(".section_action.features");
-// const sectionExplode = document.querySelector(".section_action.explode");
-// const allSections = document.querySelectorAll(".section_action");
-// const allNavLinks = document.querySelectorAll(".mini-nav-link");
-// const allNavLinksTouch = document.querySelectorAll(".mini-nav-link-touch");
-// const allCtrlBtns = document.querySelectorAll(".ctrl-btn");
-// const mainWrapper = document.querySelector(".main-wrapper");
-// const testDiv = document.querySelector(".test-div");
-// let startY;
-// let endY;
-// let activeSection = "features";
-// //...........................................................
+dotBtnContainer.addEventListener("click", function (e) {
+  const clicked = e.target.closest(".button-vid");
+  dotsFlag = clicked.classList[1];
+  if (!clicked) return;
+  vidExplode.currentTime = 0;
+  vidAssemble.currentTime = 0;
+  SetActiveDotsWrapper(dotsFlag);
+  PlayActiveDotsVideo();
+});
+allDotVids.forEach(function (el) {
+  el.addEventListener("ended", function () {
+    if (activeDotsWrap.classList.contains("explode")) {
+      SetActiveDotsWrapper("assemble");
+    } else {
+      SetActiveDotsWrapper("explode");
+    }
+    allDotButtons.forEach(function (el) {
+      el.classList.remove("active");
+      if (el.classList.contains(dotsFlag)) {
+        el.classList.add("active");
+      }
+    });
+    ActivateDotsOrVideo("dots_wrap", "video-wrapper");
+  });
+});
+const SetActiveDotsWrapper = function (value) {
+  dotsFlag = value;
+  allDotAllWrappers.forEach(function (el) {
+    el.classList.remove("active");
+    if (el.classList.contains(dotsFlag)) {
+      el.classList.add("active");
+      activeDotsWrap = el;
+    }
+  });
+};
+const ActivateDotsOrVideo = function (activate, deactivate) {
+  activeDotsWrap
+    .querySelector(`.${activate}.${dotsFlag}`)
+    .classList.add("active");
+  activeDotsWrap
+    .querySelector(`.${deactivate}.${dotsFlag}`)
+    .classList.remove("active");
+};
+const PlayActiveDotsVideo = function () {
+  ActivateDotsOrVideo("video-wrapper", "dots_wrap");
+  document.querySelector(`.vid-${dotsFlag}`).play();
+};
+//...........................................................
+//SIZING & SNAPING
+const vidSection = document.querySelector(".section_spacing");
+const contactSection = document.querySelector(".section_contact.snap");
+const btnScroll1 = document.querySelector(".button-scroll.scroll1");
+const btnScroll2 = document.querySelector(".button-scroll.scroll2");
+const sectionFeatures = document.querySelector(".section_action.features");
+const sectionExplode = document.querySelector(".section_action.explode");
+const allSections = document.querySelectorAll(".section_action");
+const allNavLinks = document.querySelectorAll(".mini-nav-link");
+const allNavLinksTouch = document.querySelectorAll(".mini-nav-link-touch");
+const allCtrlBtns = document.querySelectorAll(".ctrl-btn");
+const mainWrapper = document.querySelector(".main-wrapper");
+const testDiv = document.querySelector(".test-div");
+let startY;
+let endY;
+let activeSection = "features";
+//...........................................................
 //NAVIGATION
 // const miniNav = document.querySelector(".mini-nav-wrapper");
 // const miniNavTouch = document.querySelector(".mini-nav-wrapper.touch");
