@@ -47,10 +47,13 @@
   };
   var ActivateDotsOrVideo = function(activate, deactivate) {
     activeDotsWrap.querySelector(`.${activate}.${dotsFlag}`).classList.add("active");
+    activeDotsWrap.querySelector(`.${activate}.${dotsFlag}.mobile`).classList.add("active");
     activeDotsWrap.querySelector(`.${deactivate}.${dotsFlag}`).classList.remove("active");
+    activeDotsWrap.querySelector(`.${deactivate}.${dotsFlag}.mobile`).classList.remove("active");
   };
   var PlayActiveDotsVideo = function() {
     ActivateDotsOrVideo("video-wrapper", "dots_wrap");
     document.querySelector(`.vid-${dotsFlag}`).play();
+    document.querySelector(`.vid-${dotsFlag}.mobile`).play();
   };
 })();
