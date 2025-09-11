@@ -153,24 +153,28 @@
 // };
 //...........................................................
 //MAP DOTS
+const blackout = document.querySelector(".blackout");
 const dotBtnContainer = document.querySelector(".btn-map-container");
+const explodeDotsWrapper = document.querySelector(".dots-all-wrapper.explode");
 const allDotAllWrappers = document.querySelectorAll(".dots-all-wrapper");
+const allDotWrappers = document.querySelectorAll(".dots_wrap");
+const allVidWrappers = document.querySelectorAll(".video-wrapper");
 const vidExplode = document.querySelector(".vid-explode");
+const vidExplodeMobile = document.querySelector(".vid-explode.mobile");
 const vidAssemble = document.querySelector(".vid-assemble");
+const vidAssembleMobile = document.querySelector(".vid-assemble.mobile");
 const allDotVids = [vidExplode, vidAssemble];
 const dotExplodeButton = document.querySelector(".button-vid.explode");
 const dotAssembleButton = document.querySelector(".button-vid.assemble");
 const allDotButtons = [dotExplodeButton, dotAssembleButton];
-let activeDotsWrap;
+let activeDotsWrap = explodeDotsWrapper;
 let dotsFlag;
 
 dotBtnContainer.addEventListener("click", function (e) {
   const clicked = e.target.closest(".button-vid");
   dotsFlag = clicked.classList[1];
   if (!clicked) return;
-  vidExplode.currentTime = 0;
-  vidAssemble.currentTime = 0;
-  SetActiveDotsWrapper(dotsFlag);
+  FlashBlackout();
   PlayActiveDotsVideo();
 });
 allDotVids.forEach(function (el) {
@@ -217,6 +221,13 @@ const PlayActiveDotsVideo = function () {
   ActivateDotsOrVideo("video-wrapper", "dots_wrap");
   document.querySelector(`.vid-${dotsFlag}`).play();
   document.querySelector(`.vid-${dotsFlag}.mobile`).play();
+};
+
+const FlashBlackout = function () {
+  blackout.classList.remove("off");
+  setTimeout(function () {
+    blackout.classList.add("off"), 10;
+  });
 };
 //...........................................................
 //SIZING & SNAPING

@@ -1,22 +1,26 @@
 (() => {
   // script.js
+  var blackout = document.querySelector(".blackout");
   var dotBtnContainer = document.querySelector(".btn-map-container");
+  var explodeDotsWrapper = document.querySelector(".dots-all-wrapper.explode");
   var allDotAllWrappers = document.querySelectorAll(".dots-all-wrapper");
+  var allDotWrappers = document.querySelectorAll(".dots_wrap");
+  var allVidWrappers = document.querySelectorAll(".video-wrapper");
   var vidExplode = document.querySelector(".vid-explode");
+  var vidExplodeMobile = document.querySelector(".vid-explode.mobile");
   var vidAssemble = document.querySelector(".vid-assemble");
+  var vidAssembleMobile = document.querySelector(".vid-assemble.mobile");
   var allDotVids = [vidExplode, vidAssemble];
   var dotExplodeButton = document.querySelector(".button-vid.explode");
   var dotAssembleButton = document.querySelector(".button-vid.assemble");
   var allDotButtons = [dotExplodeButton, dotAssembleButton];
-  var activeDotsWrap;
+  var activeDotsWrap = explodeDotsWrapper;
   var dotsFlag;
   dotBtnContainer.addEventListener("click", function(e) {
     const clicked = e.target.closest(".button-vid");
     dotsFlag = clicked.classList[1];
     if (!clicked) return;
-    vidExplode.currentTime = 0;
-    vidAssemble.currentTime = 0;
-    SetActiveDotsWrapper(dotsFlag);
+    FlashBlackout();
     PlayActiveDotsVideo();
   });
   allDotVids.forEach(function(el) {
@@ -55,5 +59,11 @@
     ActivateDotsOrVideo("video-wrapper", "dots_wrap");
     document.querySelector(`.vid-${dotsFlag}`).play();
     document.querySelector(`.vid-${dotsFlag}.mobile`).play();
+  };
+  var FlashBlackout = function() {
+    blackout.classList.remove("off");
+    setTimeout(function() {
+      blackout.classList.add("off"), 10;
+    });
   };
 })();
