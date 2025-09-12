@@ -6,11 +6,17 @@
   var allDotWrappers = document.querySelectorAll(".dots_wrap");
   var allVidWrappers = document.querySelectorAll(".video-wrapper");
   var vidExplode = document.querySelector(".vid-explode");
-  var vidExplodeMobile = document.querySelector(".vid-explode.mobile");
+  var vidExplodeTablet = document.querySelector(".vid-explode.tablet");
+  var vidExplodeMobileL = document.querySelector(".vid-explode.mobile-l");
+  var vidExplodeMobileP = document.querySelector(".vid-explode.mobile-p");
   var vidAssemble = document.querySelector(".vid-assemble");
-  var vidAssembleMobile = document.querySelector(".vid-assemble.mobile");
+  var vidAssembleTablet = document.querySelector(".vid-assemble.tablet");
+  var vidAssembleMobileL = document.querySelector(".vid-assemble.mobile-l");
+  var vidAssembleMobileP = document.querySelector(".vid-assemble.mobile-p");
   var allDotVids = [vidExplode, vidAssemble];
-  var allDotVidsMobile = [vidExplodeMobile, vidAssembleMobile];
+  var allDotVidsTablet = [vidExplodeTablet, vidAssembleTablet];
+  var allDotVidsMobileL = [vidExplodeMobileL, vidAssembleMobileL];
+  var allDotVidsMobileP = [vidExplodeMobileP, vidAssembleMobileP];
   var dotExplodeButton = document.querySelector(".button-vid.explode");
   var dotAssembleButton = document.querySelector(".button-vid.assemble");
   var allDotButtons = [dotExplodeButton, dotAssembleButton];
@@ -20,7 +26,13 @@
     allDotVids.forEach(function(el) {
       el.currentTime = 0;
     });
-    allDotVidsMobile.forEach(function(el) {
+    allDotVidsTablet.forEach(function(el) {
+      el.currentTime = 0;
+    });
+    allDotVidsMobileL.forEach(function(el) {
+      el.currentTime = 0;
+    });
+    allDotVidsMobileP.forEach(function(el) {
       el.currentTime = 0;
     });
     const clicked = e.target.closest(".button-vid");
@@ -58,19 +70,18 @@
     });
   };
   var PlayActiveDotsVideo = function() {
-    document.querySelector(`.vid-${dotsFlag}`).play();
-    document.querySelector(`.vid-${dotsFlag}.mobile`).play();
+    const vidArray = [
+      document.querySelector(`.vid-${dotsFlag}`),
+      document.querySelector(`.vid-${dotsFlag}.tablet`),
+      document.querySelector(`.vid-${dotsFlag}.mobile-l`),
+      document.querySelector(`.vid-${dotsFlag}.mobile-p`)
+    ];
+    vidArray.forEach((el) => el.play());
   };
   var ToggleDotsImage = function(activeImage, state) {
     const allActiveDotsImages = activeImage.querySelectorAll(".dots_wrap");
-    if (state) {
-      allActiveDotsImages.forEach(function(el) {
-        el.classList.add("active");
-      });
-    } else {
-      allActiveDotsImages.forEach(function(el) {
-        el.classList.remove("active");
-      });
-    }
+    allActiveDotsImages.forEach(function(el) {
+      state ? el.classList.add("active") : el.classList.remove("active");
+    });
   };
 })();

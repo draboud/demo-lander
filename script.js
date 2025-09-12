@@ -159,11 +159,17 @@ const allDotAllWrappers = document.querySelectorAll(".dots-all-wrapper");
 const allDotWrappers = document.querySelectorAll(".dots_wrap");
 const allVidWrappers = document.querySelectorAll(".video-wrapper");
 const vidExplode = document.querySelector(".vid-explode");
-const vidExplodeMobile = document.querySelector(".vid-explode.mobile");
+const vidExplodeTablet = document.querySelector(".vid-explode.tablet");
+const vidExplodeMobileL = document.querySelector(".vid-explode.mobile-l");
+const vidExplodeMobileP = document.querySelector(".vid-explode.mobile-p");
 const vidAssemble = document.querySelector(".vid-assemble");
-const vidAssembleMobile = document.querySelector(".vid-assemble.mobile");
+const vidAssembleTablet = document.querySelector(".vid-assemble.tablet");
+const vidAssembleMobileL = document.querySelector(".vid-assemble.mobile-l");
+const vidAssembleMobileP = document.querySelector(".vid-assemble.mobile-p");
 const allDotVids = [vidExplode, vidAssemble];
-const allDotVidsMobile = [vidExplodeMobile, vidAssembleMobile];
+const allDotVidsTablet = [vidExplodeTablet, vidAssembleTablet];
+const allDotVidsMobileL = [vidExplodeMobileL, vidAssembleMobileL];
+const allDotVidsMobileP = [vidExplodeMobileP, vidAssembleMobileP];
 const dotExplodeButton = document.querySelector(".button-vid.explode");
 const dotAssembleButton = document.querySelector(".button-vid.assemble");
 const allDotButtons = [dotExplodeButton, dotAssembleButton];
@@ -174,7 +180,13 @@ dotBtnContainer.addEventListener("click", function (e) {
   allDotVids.forEach(function (el) {
     el.currentTime = 0;
   });
-  allDotVidsMobile.forEach(function (el) {
+  allDotVidsTablet.forEach(function (el) {
+    el.currentTime = 0;
+  });
+  allDotVidsMobileL.forEach(function (el) {
+    el.currentTime = 0;
+  });
+  allDotVidsMobileP.forEach(function (el) {
     el.currentTime = 0;
   });
   const clicked = e.target.closest(".button-vid");
@@ -212,20 +224,19 @@ const SetActiveDotsWrapper = function (value) {
   });
 };
 const PlayActiveDotsVideo = function () {
-  document.querySelector(`.vid-${dotsFlag}`).play();
-  document.querySelector(`.vid-${dotsFlag}.mobile`).play();
+  const vidArray = [
+    document.querySelector(`.vid-${dotsFlag}`),
+    document.querySelector(`.vid-${dotsFlag}.tablet`),
+    document.querySelector(`.vid-${dotsFlag}.mobile-l`),
+    document.querySelector(`.vid-${dotsFlag}.mobile-p`),
+  ];
+  vidArray.forEach((el) => el.play());
 };
 const ToggleDotsImage = function (activeImage, state) {
   const allActiveDotsImages = activeImage.querySelectorAll(".dots_wrap");
-  if (state) {
-    allActiveDotsImages.forEach(function (el) {
-      el.classList.add("active");
-    });
-  } else {
-    allActiveDotsImages.forEach(function (el) {
-      el.classList.remove("active");
-    });
-  }
+  allActiveDotsImages.forEach(function (el) {
+    state ? el.classList.add("active") : el.classList.remove("active");
+  });
 };
 
 //...........................................................
