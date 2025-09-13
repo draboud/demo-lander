@@ -1,10 +1,13 @@
 (() => {
   // script.js
+  var baseHeader = "Explode/Assemble";
+  var baseText = "Hover/click the dots for details about particular components. Use buttons below for exploded/assembled views.";
+  var dotTopHeader = document.querySelector(".dots_wrap-header");
+  var dotTopText = document.querySelector(".dots_wrap-text");
+  var allDots = document.querySelectorAll(".map_dot");
   var dotBtnContainer = document.querySelector(".btn-map-container");
   var explodeDotsWrapper = document.querySelector(".dots-all-wrapper.explode");
   var allDotAllWrappers = document.querySelectorAll(".dots-all-wrapper");
-  var allDotWrappers = document.querySelectorAll(".dots_wrap");
-  var allVidWrappers = document.querySelectorAll(".video-wrapper");
   var vidExplode = document.querySelector(".vid-explode");
   var vidExplodeTablet = document.querySelector(".vid-explode.tablet");
   var vidExplodeMobileL = document.querySelector(".vid-explode.mobile-l");
@@ -22,7 +25,23 @@
   var allDotButtons = [dotExplodeButton, dotAssembleButton];
   var activeDotsWrap = explodeDotsWrapper;
   var dotsFlag;
+  allDots.forEach(function(el) {
+    el.addEventListener("mouseover", function() {
+      activeDotsWrap.querySelector(".dots_wrap-header").innerHTML = el.querySelector(".map_dot-name").innerHTML;
+      activeDotsWrap.querySelector(".dots_wrap-text").innerHTML = el.querySelector(".map_dot-description").innerHTML;
+    });
+    el.addEventListener("mouseout", function() {
+      activeDotsWrap.querySelector(".dots_wrap-header").innerHTML = baseHeader;
+      activeDotsWrap.querySelector(".dots_wrap-text").innerHTML = baseText;
+    });
+  });
   dotBtnContainer.addEventListener("click", function(e) {
+    const clicked = e.target.closest(".button-vid");
+    if (!clicked) return;
+    if (clicked.classList.contains("datasheets")) {
+      activeDotsWrap.querySelector(".dots_wrap-top-wrapper").classList.add("active");
+      return;
+    }
     allDotVids.forEach(function(el) {
       el.currentTime = 0;
     });
@@ -35,9 +54,8 @@
     allDotVidsMobileP.forEach(function(el) {
       el.currentTime = 0;
     });
-    const clicked = e.target.closest(".button-vid");
     dotsFlag = clicked.classList[1];
-    if (!clicked) return;
+    activeDotsWrap.querySelector(".dots_wrap-top-wrapper").classList.remove("active");
     ToggleDotsImage(activeDotsWrap, false);
     PlayActiveDotsVideo();
   });
@@ -57,6 +75,9 @@
         }
       });
       ToggleDotsImage(activeDotsWrap, true);
+      setTimeout(function() {
+        activeDotsWrap.querySelector(".dots_wrap-top-wrapper").classList.add("active");
+      }, 25);
     });
   });
   var SetActiveDotsWrapper = function(value) {

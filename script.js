@@ -153,11 +153,15 @@
 // };
 //...........................................................
 //MAP DOTS
+const baseHeader = "Explode/Assemble";
+const baseText =
+  "Hover/click the dots for details about particular components. Use buttons below for exploded/assembled views.";
+const dotTopHeader = document.querySelector(".dots_wrap-header");
+const dotTopText = document.querySelector(".dots_wrap-text");
+const allDots = document.querySelectorAll(".map_dot");
 const dotBtnContainer = document.querySelector(".btn-map-container");
 const explodeDotsWrapper = document.querySelector(".dots-all-wrapper.explode");
 const allDotAllWrappers = document.querySelectorAll(".dots-all-wrapper");
-const allDotWrappers = document.querySelectorAll(".dots_wrap");
-const allVidWrappers = document.querySelectorAll(".video-wrapper");
 const vidExplode = document.querySelector(".vid-explode");
 const vidExplodeTablet = document.querySelector(".vid-explode.tablet");
 const vidExplodeMobileL = document.querySelector(".vid-explode.mobile-l");
@@ -176,7 +180,28 @@ const allDotButtons = [dotExplodeButton, dotAssembleButton];
 let activeDotsWrap = explodeDotsWrapper;
 let dotsFlag;
 
+allDots.forEach(function (el) {
+  el.addEventListener("mouseover", function () {
+    activeDotsWrap.querySelector(".dots_wrap-header").innerHTML =
+      el.querySelector(".map_dot-name").innerHTML;
+    activeDotsWrap.querySelector(".dots_wrap-text").innerHTML =
+      el.querySelector(".map_dot-description").innerHTML;
+  });
+  el.addEventListener("mouseout", function () {
+    activeDotsWrap.querySelector(".dots_wrap-header").innerHTML = baseHeader;
+    activeDotsWrap.querySelector(".dots_wrap-text").innerHTML = baseText;
+  });
+});
+
 dotBtnContainer.addEventListener("click", function (e) {
+  const clicked = e.target.closest(".button-vid");
+  if (!clicked) return;
+  if (clicked.classList.contains("datasheets")) {
+    activeDotsWrap
+      .querySelector(".dots_wrap-top-wrapper")
+      .classList.add("active");
+    return;
+  }
   allDotVids.forEach(function (el) {
     el.currentTime = 0;
   });
@@ -189,9 +214,10 @@ dotBtnContainer.addEventListener("click", function (e) {
   allDotVidsMobileP.forEach(function (el) {
     el.currentTime = 0;
   });
-  const clicked = e.target.closest(".button-vid");
   dotsFlag = clicked.classList[1];
-  if (!clicked) return;
+  activeDotsWrap
+    .querySelector(".dots_wrap-top-wrapper")
+    .classList.remove("active");
   ToggleDotsImage(activeDotsWrap, false);
   PlayActiveDotsVideo();
 });
@@ -211,6 +237,11 @@ allDotVids.forEach(function (el) {
       }
     });
     ToggleDotsImage(activeDotsWrap, true);
+    setTimeout(function () {
+      activeDotsWrap
+        .querySelector(".dots_wrap-top-wrapper")
+        .classList.add("active");
+    }, 25);
   });
 });
 const SetActiveDotsWrapper = function (value) {
