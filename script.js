@@ -153,9 +153,14 @@
 // };
 //...........................................................
 //MAP DOTS
+const allDatasheetButtons = document.querySelectorAll(".button-datasheet");
 const baseHeader = "Explode/Assemble";
 const baseText =
   "Hover/click the dots for details about particular components. Use buttons below for exploded/assembled views.";
+const dotTopContentWrapper = document.querySelector(".dots_wrap-top-wrapper");
+const allDotTopContentWrappers = document.querySelectorAll(
+  ".dots_wrap-top-wrapper"
+);
 const dotTopHeader = document.querySelector(".dots_wrap-header");
 const dotTopText = document.querySelector(".dots_wrap-text");
 const allDots = document.querySelectorAll(".map_dot");
@@ -179,20 +184,48 @@ const dotAssembleButton = document.querySelector(".button-vid.assemble");
 const allDotButtons = [dotExplodeButton, dotAssembleButton];
 let activeDotsWrap = explodeDotsWrapper;
 let dotsFlag;
+let datasheetButtonTimer;
 
-allDots.forEach(function (el) {
+allDatasheetButtons.forEach(function (el) {
+  el.addEventListener("click", function () {
+    console.log(el.parentElement.querySelector(".dots_wrap-header").innerHTML);
+  });
+});
+allDotTopContentWrappers.forEach(function (el) {
   el.addEventListener("mouseover", function () {
+    clearTimeout(datasheetButtonTimer);
+  });
+  el.addEventListener("mouseout", function () {
+    datasheetButtonTimer = setTimeout(function () {
+      ResetTopWrapperContent();
+    }, 1500);
+  });
+});
+allDots.forEach(function (el) {
+  el.addEventListener("click", function () {
+    activeDotsWrap
+      .querySelector(".dots_wrap-top-wrapper")
+      .classList.remove("active");
+    setTimeout(function () {
+      activeDotsWrap
+        .querySelector(".dots_wrap-top-wrapper")
+        .classList.add("active");
+    }, 25);
     activeDotsWrap.querySelector(".dots_wrap-header").innerHTML =
       el.querySelector(".map_dot-name").innerHTML;
     activeDotsWrap.querySelector(".dots_wrap-text").innerHTML =
       el.querySelector(".map_dot-description").innerHTML;
+    activeDotsWrap.querySelector(".button-datasheet").classList.add("active");
+  });
+  el.addEventListener("mouseover", function () {
+    clearTimeout(datasheetButtonTimer);
   });
   el.addEventListener("mouseout", function () {
-    activeDotsWrap.querySelector(".dots_wrap-header").innerHTML = baseHeader;
-    activeDotsWrap.querySelector(".dots_wrap-text").innerHTML = baseText;
+    datasheetButtonTimer = setTimeout(function () {
+      ResetTopWrapperContent();
+    }, 1500);
   });
 });
-
 dotBtnContainer.addEventListener("click", function (e) {
   const clicked = e.target.closest(".button-vid");
   if (!clicked) return;
@@ -219,6 +252,7 @@ dotBtnContainer.addEventListener("click", function (e) {
     .querySelector(".dots_wrap-top-wrapper")
     .classList.remove("active");
   ToggleDotsImage(activeDotsWrap, false);
+  ResetTopWrapperContent();
   PlayActiveDotsVideo();
 });
 allDotVids.forEach(function (el) {
@@ -244,6 +278,11 @@ allDotVids.forEach(function (el) {
     }, 25);
   });
 });
+const ResetTopWrapperContent = function () {
+  activeDotsWrap.querySelector(".dots_wrap-header").innerHTML = baseHeader;
+  activeDotsWrap.querySelector(".dots_wrap-text").innerHTML = baseText;
+  activeDotsWrap.querySelector(".button-datasheet").classList.remove("active");
+};
 const SetActiveDotsWrapper = function (value) {
   dotsFlag = value;
   allDotAllWrappers.forEach(function (el) {
@@ -269,7 +308,6 @@ const ToggleDotsImage = function (activeImage, state) {
     state ? el.classList.add("active") : el.classList.remove("active");
   });
 };
-
 //...........................................................
 //SIZING & SNAPING
 // const vidSection = document.querySelector(".section_spacing");

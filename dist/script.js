@@ -1,7 +1,12 @@
 (() => {
   // script.js
+  var allDatasheetButtons = document.querySelectorAll(".button-datasheet");
   var baseHeader = "Explode/Assemble";
   var baseText = "Hover/click the dots for details about particular components. Use buttons below for exploded/assembled views.";
+  var dotTopContentWrapper = document.querySelector(".dots_wrap-top-wrapper");
+  var allDotTopContentWrappers = document.querySelectorAll(
+    ".dots_wrap-top-wrapper"
+  );
   var dotTopHeader = document.querySelector(".dots_wrap-header");
   var dotTopText = document.querySelector(".dots_wrap-text");
   var allDots = document.querySelectorAll(".map_dot");
@@ -25,14 +30,39 @@
   var allDotButtons = [dotExplodeButton, dotAssembleButton];
   var activeDotsWrap = explodeDotsWrapper;
   var dotsFlag;
-  allDots.forEach(function(el) {
+  var datasheetButtonTimer;
+  allDatasheetButtons.forEach(function(el) {
+    el.addEventListener("click", function() {
+      console.log(el.parentElement.querySelector(".dots_wrap-header").innerHTML);
+    });
+  });
+  allDotTopContentWrappers.forEach(function(el) {
     el.addEventListener("mouseover", function() {
-      activeDotsWrap.querySelector(".dots_wrap-header").innerHTML = el.querySelector(".map_dot-name").innerHTML;
-      activeDotsWrap.querySelector(".dots_wrap-text").innerHTML = el.querySelector(".map_dot-description").innerHTML;
+      clearTimeout(datasheetButtonTimer);
     });
     el.addEventListener("mouseout", function() {
-      activeDotsWrap.querySelector(".dots_wrap-header").innerHTML = baseHeader;
-      activeDotsWrap.querySelector(".dots_wrap-text").innerHTML = baseText;
+      datasheetButtonTimer = setTimeout(function() {
+        ResetTopWrapperContent();
+      }, 1500);
+    });
+  });
+  allDots.forEach(function(el) {
+    el.addEventListener("click", function() {
+      activeDotsWrap.querySelector(".dots_wrap-top-wrapper").classList.remove("active");
+      setTimeout(function() {
+        activeDotsWrap.querySelector(".dots_wrap-top-wrapper").classList.add("active");
+      }, 25);
+      activeDotsWrap.querySelector(".dots_wrap-header").innerHTML = el.querySelector(".map_dot-name").innerHTML;
+      activeDotsWrap.querySelector(".dots_wrap-text").innerHTML = el.querySelector(".map_dot-description").innerHTML;
+      activeDotsWrap.querySelector(".button-datasheet").classList.add("active");
+    });
+    el.addEventListener("mouseover", function() {
+      clearTimeout(datasheetButtonTimer);
+    });
+    el.addEventListener("mouseout", function() {
+      datasheetButtonTimer = setTimeout(function() {
+        ResetTopWrapperContent();
+      }, 1500);
     });
   });
   dotBtnContainer.addEventListener("click", function(e) {
@@ -57,6 +87,7 @@
     dotsFlag = clicked.classList[1];
     activeDotsWrap.querySelector(".dots_wrap-top-wrapper").classList.remove("active");
     ToggleDotsImage(activeDotsWrap, false);
+    ResetTopWrapperContent();
     PlayActiveDotsVideo();
   });
   allDotVids.forEach(function(el) {
@@ -80,6 +111,11 @@
       }, 25);
     });
   });
+  var ResetTopWrapperContent = function() {
+    activeDotsWrap.querySelector(".dots_wrap-header").innerHTML = baseHeader;
+    activeDotsWrap.querySelector(".dots_wrap-text").innerHTML = baseText;
+    activeDotsWrap.querySelector(".button-datasheet").classList.remove("active");
+  };
   var SetActiveDotsWrapper = function(value) {
     dotsFlag = value;
     allDotAllWrappers.forEach(function(el) {
