@@ -1,5 +1,7 @@
 (() => {
   // script.js
+  var blackout = document.querySelector(".blackout");
+  var sectionMapDots = document.querySelector(".section_map-dots");
   var allDatasheetButtons = document.querySelectorAll(".button-datasheet");
   var baseHeader = "Explode/Assemble";
   var baseText = "Hover/click the dots for details about particular components. Use buttons below for exploded/assembled views.";
@@ -31,9 +33,18 @@
   var activeDotsWrap = explodeDotsWrapper;
   var dotsFlag;
   var datasheetButtonTimer;
+  var explodeOrAssemble;
+  var compNumberString;
   allDatasheetButtons.forEach(function(el) {
     el.addEventListener("click", function() {
-      console.log(el.parentElement.querySelector(".dots_wrap-header").innerHTML);
+      explodeOrAssemble = el.parentElement.parentElement.classList[1];
+      const compNumber = el.parentElement.querySelector(".dots_wrap-header").innerHTML;
+      if (compNumber.length > 11) {
+        compNumberString = `comp-${compNumber.slice(-2)}`;
+      } else {
+        compNumberString = `comp-${compNumber[compNumber.length - 1]}`;
+      }
+      OpenDataSheet(compNumberString, explodeOrAssemble);
     });
   });
   allDotTopContentWrappers.forEach(function(el) {
@@ -140,5 +151,116 @@
     allActiveDotsImages.forEach(function(el) {
       state ? el.classList.add("active") : el.classList.remove("active");
     });
+  };
+  var OpenDataSheet = function(value, explodeOrAssemble2) {
+    FlashBlackout();
+    sectionMapDots.classList.remove("active");
+    sectionDataZooms.classList.add("active");
+    document.querySelector(`.datasheet-card-wrapper.${value}`).click();
+    backButton.classList.add("active");
+  };
+  var FlashBlackout = function() {
+    blackout.classList.remove("off");
+    setTimeout(function() {
+      blackout.classList.add("off");
+    }, 5);
+  };
+  var backButton = document.querySelector(".ctrl-btn.datazoom.back");
+  var sectionDataZooms = document.querySelector(".section_datasheets");
+  var dataZoomButtonWrapper = document.querySelector(
+    ".ctrl-btn-wrapper.datazooms"
+  );
+  var datasheetsAllWrapper = document.querySelector(".datasheets-all-wrapper");
+  var allDataZoomWrappers = document.querySelectorAll(
+    ".datazooms-comp-wrapper"
+  );
+  var allDataZoomVids = document.querySelectorAll(".datazoom-vid");
+  var activeDataZoomComp;
+  var allTextImageButtons = document.querySelectorAll(".text-image-btn");
+  var allDataZoomSubHeadings = document.querySelectorAll(
+    ".datazoom-subheading"
+  );
+  var allDataZoomText = document.querySelectorAll(".datazoom-text");
+  var imageTextFlag = "text";
+  dataZoomButtonWrapper.addEventListener("click", function(e) {
+    const clicked = e.target.closest(".ctrl-btn");
+    if (!clicked) return;
+    if (clicked.classList.contains("back")) {
+      ReturnToExplodeAssemble();
+    } else {
+      document.querySelector(".ctrl-btn.datazoom.back").classList.remove("active");
+      imageTextFlag = "text";
+      allTextImageButtons.forEach(
+        (el) => el.querySelector(".text-image-btn-text").innerHTML = "image"
+      );
+      allDataZoomSubHeadings.forEach((el) => el.classList.add("active"));
+      allDataZoomText.forEach((el) => el.classList.add("active"));
+      allDataZoomWrappers.forEach(function(el) {
+        el.classList.remove("active");
+        el.querySelector(".datazoom-content-wrapper").classList.remove("active");
+        el.querySelector(".dimmer").classList.add("off");
+        el.querySelectorAll(".datazoom-image").forEach(
+          (el2) => el2.classList.remove("active")
+        );
+      });
+      allDataZoomVids.forEach(function(el) {
+        el.currentTime = 0;
+      });
+      datasheetsAllWrapper.style.display = "grid";
+      setTimeout(function() {
+        datasheetsAllWrapper.classList.add("active");
+      }, 25);
+      dataZoomButtonWrapper.classList.remove("active");
+    }
+  });
+  datasheetsAllWrapper.addEventListener("click", function(e) {
+    const clicked = e.target.closest(".datasheet-card-wrapper");
+    if (!clicked) return;
+    allDataZoomVids.forEach(function(el) {
+      el.currentTime = 0;
+    });
+    ActivateDataZoomWrapper(clicked.classList[1]);
+  });
+  allDataZoomVids.forEach(function(el) {
+    el.addEventListener("ended", function() {
+      activeDataZoomComp.querySelector(".dimmer").classList.remove("off");
+      activeDataZoomComp.querySelectorAll(".datazoom-image").forEach((el2) => el2.classList.add("active"));
+      activeDataZoomComp.querySelector(".datazoom-content-wrapper").classList.add("active");
+      dataZoomButtonWrapper.classList.add("active");
+    });
+  });
+  allTextImageButtons.forEach(function(el) {
+    el.addEventListener("click", function() {
+      el.querySelector(".text-image-btn-text").innerHTML = imageTextFlag;
+      imageTextFlag === "text" ? imageTextFlag = "image" : imageTextFlag = "text";
+      el.parentElement.parentElement.querySelectorAll(".datazoom-subheading").forEach((el2) => el2.classList.toggle("active"));
+      el.parentElement.parentElement.querySelectorAll(".datazoom-text").forEach((el3) => el3.classList.toggle("active"));
+      imageTextFlag === "image" ? el.parentElement.parentElement.parentElement.querySelector(".dimmer").classList.add("off") : el.parentElement.parentElement.parentElement.querySelector(".dimmer").classList.remove("off");
+    });
+  });
+  var ReturnToExplodeAssemble = function() {
+    sectionDataZooms.classList.remove("active");
+    document.querySelector(".ctrl-btn.datazoom.datasheets").click();
+    document.querySelector(`.dots_wrap.${explodeOrAssemble}`).classList.add("active");
+    document.querySelector(`.dots-all-wrapper.${explodeOrAssemble}`).classList.add("active");
+    sectionMapDots.classList.add("active");
+  };
+  var ActivateDataZoomWrapper = function(value) {
+    datasheetsAllWrapper.classList.remove("active");
+    datasheetsAllWrapper.style.display = "none";
+    allDataZoomWrappers.forEach(function(el) {
+      el.classList.remove("active");
+      if (el.classList.contains(value)) {
+        el.classList.add("active");
+        el.querySelectorAll(".datazoom-vid").forEach(function(el2) {
+          setTimeout(function() {
+            el2.play();
+          }, 900);
+        });
+      }
+    });
+    activeDataZoomComp = document.querySelector(
+      `.datazooms-comp-wrapper.${value}`
+    );
   };
 })();
