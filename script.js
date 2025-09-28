@@ -1,3 +1,546 @@
+//UNIVERSAL DEFINITIONS
+const FEATURE_MAIN_VID_REPLAY = 3000;
+const DATASHEET_BUTTON_TIMER = 1500;
+const FADE_IN_DATA_HEADING = 25;
+// const
+const navBar = document.querySelector(".nav_menu");
+const navLinkFeatures = document.querySelector(".nav_menu_link.features");
+const navLinkComponents = document.querySelector(".nav_menu_link.components");
+const navLinkDatasheets = document.querySelector(".nav_menu_link.datasheets");
+const navLinkInstructions = document.querySelector(
+  ".nav_menu_link.instructions"
+);
+const allNavLinks = document.querySelectorAll(".nav_menu_link");
+const sectionFeatures = document.querySelector(".section_features");
+const sectionMapDots = document.querySelector(".section_map-dots");
+const sectionDatasheets = document.querySelector(".section_datasheets");
+const allSections = [sectionFeatures, sectionMapDots, sectionDatasheets];
+const ctrlBtnWrapper = document.querySelector(".ctrl-btn-wrapper");
+const allFeatureButtons = document.querySelectorAll(".feature-btn");
+const allDotsButtons = document.querySelectorAll(".dots-btn");
+const allDataZoomBtns = document.querySelectorAll(".datazoom-btn");
+const allCtrlButtons = [
+  ...allFeatureButtons,
+  ...allDotsButtons,
+  ...allDataZoomBtns,
+];
+//............................................................................
+//FEATURES DEFINITIONS
+const allFeatureVidAllWrappers = document.querySelectorAll(".vid-all-wrapper");
+const allFeatureVidContentWrappers = document.querySelectorAll(
+  ".vid-content-wrapper"
+);
+const allFeatureVidWrappers = document.querySelectorAll(".vid-wrapper");
+const allFeatureVids = document.querySelectorAll(".vid.feature");
+const allFeatureVidEndWrappers = document.querySelectorAll(".vid-end-wrapper");
+const allFeatureEndVids = document.querySelectorAll(".vid.end");
+let activeVidAllWrapper;
+let vidFlag;
+let newTimer;
+//............................................................................
+//MAP DOTS DEFINITIONS
+const allDatasheetButtons = document.querySelectorAll(".button-datasheet");
+const baseHeader = "Explode/Assemble";
+const baseText =
+  "Hover/click the dots for details about particular components. Use buttons below for exploded/assembled views.";
+const allDotTopContentWrappers = document.querySelectorAll(
+  ".dots_wrap-top-wrapper"
+);
+const allDots = document.querySelectorAll(".map_dot");
+const allDotsAllWrappers = document.querySelectorAll(".dots-all-wrapper");
+const dotVidExplode = document.querySelector(".vid.explode");
+const dotVidExplodeMobileP = document.querySelector(".vid.explode.mobile-p");
+const dotVidAssemble = document.querySelector(".vid.assemble");
+const dotVidAssembleMobileP = document.querySelector(".vid.assemble.mobile-p");
+const allDotVids = [dotVidExplode, dotVidAssemble];
+const allDotVidsMobileP = [dotVidExplodeMobileP, dotVidAssembleMobileP];
+const dotExplodeButton = document.querySelector(".dots-btn.explode");
+const dotAssembleButton = document.querySelector(".dots-btn.assemble");
+const explodeDotsWrapper = document.querySelector(".dots-all-wrapper.explode");
+let activeDotsWrap = explodeDotsWrapper;
+let dotsFlag;
+let datasheetButtonTimer;
+let explodeOrAssemble;
+let compNumberString;
+let compContentActive = false;
+//............................................................................
+//DATAZOOMS DEFINITIONS;
+const blackout = document.querySelector(".blackout");
+const dataZoomBackButton = document.querySelector(".datazoom-btn.back");
+const dataZoomDatasheetsButton = document.querySelector(
+  ".datazoom-btn.datasheets"
+);
+const datasheetsAllWrapper = document.querySelector(".datasheets-all-wrapper");
+const allDataZoomWrappers = document.querySelectorAll(
+  ".datazooms-comp-wrapper"
+);
+const allDataZoomVids = document.querySelectorAll(".vid.datazoom");
+const allTextImageButtons = document.querySelectorAll(".text-image-btn");
+const dataZoomMainHeading = document.querySelector(".datazoom-main-heading");
+const allDataZoomSubHeadings = document.querySelectorAll(
+  ".datazoom-subheading"
+);
+const allDataZoomText = document.querySelectorAll(".datazoom-text");
+let activeDataZoomComp;
+let imageTextFlag = "text";
+let fromExplodeAssemble = false;
+//............................................................................
+//UNIVERSAL OPERATIONS
+navBar.addEventListener("click", function (e) {
+  const clicked = e.target.closest(".nav_menu_link");
+  if (!clicked) return;
+  const activeSectionFlag = clicked.classList[1];
+  ActivateSection(activeSectionFlag);
+});
+const ActivateSection = function (value) {
+  allNavLinks.forEach(function (el) {
+    el.classList.remove("current");
+    if (el.classList.contains(value)) el.classList.add("current");
+  });
+  allSections.forEach(function (el) {
+    el.classList.remove("active");
+  });
+  allCtrlButtons.forEach(function (el) {
+    el.classList.remove("active");
+  });
+  switch (value) {
+    case "features":
+      ResetAndPauseAllVideos();
+      allFeatureVidAllWrappers.forEach(function (el) {
+        el.classList.remove("active");
+        if (el.classList.contains("rotation")) el.classList.add("active");
+      });
+      allFeatureVidContentWrappers.forEach(function (el) {
+        el.classList.remove("active");
+        if (el.classList.contains("rotation")) el.classList.add("active");
+      });
+      allFeatureVids.forEach(function (el) {
+        el.classList.remove("active");
+        if (el.classList.contains("rotation")) el.classList.add("active");
+      });
+      allFeatureButtons.forEach(function (el) {
+        el.classList.add("active");
+      });
+      ctrlBtnWrapper.classList.add("active");
+      sectionFeatures.classList.add("active");
+      FlashBlackout();
+      break;
+    case "components":
+      ResetAndPauseAllVideos();
+      allDotsAllWrappers.forEach(function (el) {
+        el.classList.remove("active");
+      });
+      document.querySelector(".dots_wrap.explode").classList.add("active");
+      explodeDotsWrapper.classList.add("active");
+      activeDotsWrap = explodeDotsWrapper;
+      dotsFlag = "";
+      explodeDotsWrapper
+        .querySelector(".dots_wrap-top-wrapper")
+        .classList.add("active");
+      dotAssembleButton.classList.remove("active");
+      dotExplodeButton.classList.add("active");
+      ctrlBtnWrapper.classList.add("active");
+      sectionMapDots.classList.add("active");
+      FlashBlackout();
+      break;
+    case "datasheets":
+      dataZoomBackButton.classList.remove("active");
+      imageTextFlag = "text";
+      allTextImageButtons.forEach(
+        (el) => (el.querySelector(".text-image-btn-text").innerHTML = "image")
+      );
+      allDataZoomSubHeadings.forEach((el) => el.classList.add("active"));
+      allDataZoomText.forEach((el) => el.classList.add("active"));
+      allDataZoomWrappers.forEach(function (el) {
+        el.classList.remove("active");
+        el.querySelector(".datazoom-content-wrapper").classList.remove(
+          "active"
+        );
+        el.querySelector(".dimmer").classList.add("off");
+        el.querySelectorAll(".datazoom-image").forEach((el2) =>
+          el2.classList.remove("active")
+        );
+      });
+      datasheetsAllWrapper.style.display = "grid";
+      setTimeout(function () {
+        // dataZoomMainHeading.classList.add("active");
+        datasheetsAllWrapper.classList.add("active");
+      }, 25);
+      fromExplodeAssemble = false;
+      ctrlBtnWrapper.classList.remove("active");
+      sectionDatasheets.classList.add("active");
+      FlashBlackout();
+      break;
+    case "instructions":
+      ResetAndPauseAllVideos();
+      FlashBlackout();
+      break;
+  }
+};
+const ResetAndPauseAllVideos = function () {
+  allFeatureVids.forEach(function (el) {
+    el.currentTime = 0;
+    el.pause();
+  });
+  allFeatureEndVids.forEach(function (el) {
+    el.currentTime = 0;
+    el.pause();
+  });
+  allDotVids.forEach(function (el) {
+    el.currentTime = 0;
+    el.pause();
+  });
+  allDotVidsMobileP.forEach(function (el) {
+    el.currentTime = 0;
+    el.pause();
+  });
+  allDataZoomVids.forEach(function (el) {
+    el.currentTime = 0;
+    el.pause();
+  });
+};
+//............................................................................
+//FEATURES SECTION
+ctrlBtnWrapper.addEventListener("click", function (e) {
+  const clicked = e.target.closest(".feature-btn");
+  if (!clicked) return;
+  vidFlag = clicked.classList[1];
+  clearTimeout(newTimer);
+  newTimer = setTimeout(() => {
+    SetActiveVidAndPlay("rotation");
+  }, 10000);
+  SetActiveVidAndPlay(vidFlag);
+});
+allFeatureVids.forEach(function (el) {
+  el.addEventListener("ended", function () {
+    el.parentElement.parentElement.parentElement
+      .querySelector(".vid-content-wrapper")
+      .classList.add("active");
+    SetActiveEndVidAndPlay(vidFlag);
+  });
+});
+const SetActiveVidAndPlay = function (vidFlag) {
+  allFeatureVids.forEach(function (el) {
+    el.currentTime = 0;
+  });
+  allFeatureEndVids.forEach(function (el) {
+    el.currentTime = 0;
+    el.pause();
+  });
+  allFeatureVidWrappers.forEach(function (el) {
+    el.classList.add("active");
+  });
+  allFeatureVidAllWrappers.forEach(function (el) {
+    el.classList.remove("active");
+    if (el.classList.contains(vidFlag)) {
+      el.classList.add("active");
+      activeVidAllWrapper = el;
+    }
+  });
+  allFeatureVidContentWrappers.forEach(function (el) {
+    el.classList.remove("active");
+    if (vidFlag === "rotation" && el.classList.contains("rotation")) {
+      el.classList.add("active");
+      return;
+    }
+  });
+  activeVidAllWrapper.querySelectorAll(".vid.feature").forEach(function (el) {
+    el.play();
+  });
+  activeVidAllWrapper
+    .querySelectorAll(".vid.feature.mobile-p")
+    .forEach(function (el) {
+      el.play();
+    });
+};
+const SetActiveEndVidAndPlay = function () {
+  activeVidAllWrapper.querySelectorAll(".vid-wrapper").forEach(function (el) {
+    el.classList.remove("active");
+  });
+  activeVidAllWrapper.querySelectorAll(".vid.end").forEach(function (el) {
+    el.play();
+  });
+  activeVidAllWrapper
+    .querySelectorAll(".vid.end.mobile-p")
+    .forEach(function (el) {
+      el.play();
+    });
+};
+//............................................................................
+//MAP DOTS SECTION
+allDots.forEach(function (el) {
+  el.addEventListener("click", function () {
+    compContentActive = true;
+    FadeInTopWrapperContent();
+    activeDotsWrap.querySelector(".dots_wrap-header").innerHTML =
+      el.querySelector(".map_dot-name").innerHTML;
+    activeDotsWrap.querySelector(".dots_wrap-text").innerHTML =
+      el.querySelector(".map_dot-description").innerHTML;
+    activeDotsWrap.querySelector(".button-datasheet").classList.add("active");
+  });
+  el.addEventListener("mouseover", function () {
+    clearTimeout(datasheetButtonTimer);
+  });
+  el.addEventListener("mouseout", function () {
+    datasheetButtonTimer = setTimeout(function () {
+      ResetTopWrapperContent(true);
+      compContentActive = false;
+    }, 1500);
+  });
+});
+allDotTopContentWrappers.forEach(function (el) {
+  el.addEventListener("mouseover", function () {
+    clearTimeout(datasheetButtonTimer);
+  });
+  el.addEventListener("mouseout", function () {
+    datasheetButtonTimer = setTimeout(function () {
+      ResetTopWrapperContent(true);
+      compContentActive = false;
+    }, 1500);
+  });
+});
+allDotVids.forEach(function (el) {
+  el.addEventListener("ended", function () {
+    const pastActiveDotsWrap = activeDotsWrap;
+    if (activeDotsWrap.classList.contains("explode")) {
+      SetActiveDotsWrapper("assemble");
+    } else {
+      SetActiveDotsWrapper("explode");
+    }
+    ToggleDotsImage(pastActiveDotsWrap, true);
+    allDotsButtons.forEach(function (el) {
+      el.classList.remove("active");
+      if (el.classList.contains(dotsFlag)) {
+        el.classList.add("active");
+      }
+    });
+    ToggleDotsImage(activeDotsWrap, true);
+    compContentActive = true;
+    FadeInTopWrapperContent();
+    compContentActive = false;
+  });
+});
+allDatasheetButtons.forEach(function (el) {
+  el.addEventListener("click", function () {
+    explodeOrAssemble = el.parentElement.parentElement.classList[1];
+    const compNumber =
+      el.parentElement.querySelector(".dots_wrap-header").innerHTML;
+    if (compNumber.length > 11) {
+      compNumberString = `comp-${compNumber.slice(-2)}`;
+    } else {
+      compNumberString = `comp-${compNumber[compNumber.length - 1]}`;
+    }
+    OpenDataSheet(compNumberString, explodeOrAssemble);
+  });
+});
+ctrlBtnWrapper.addEventListener("click", function (e) {
+  const clicked = e.target.closest(".dots-btn");
+  if (!clicked) return;
+  allDotVids.forEach(function (el) {
+    el.currentTime = 0;
+  });
+  allDotVidsMobileP.forEach(function (el) {
+    el.currentTime = 0;
+  });
+  dotsFlag = clicked.classList[1];
+  activeDotsWrap
+    .querySelector(".dots_wrap-top-wrapper")
+    .classList.remove("active");
+  ToggleDotsImage(activeDotsWrap, false);
+  ResetTopWrapperContent(false);
+  PlayActiveDotsVideo();
+});
+const ActivateDotsButtons = function () {
+  allDataZoomBtns.forEach(function (el) {
+    el.classList.remove("active");
+  });
+  allDotsButtons.forEach(function (el) {
+    el.classList.add("active");
+  });
+  if (activeDotsWrap.classList.contains("explode")) {
+    dotAssembleButton.classList.remove("active");
+  } else dotExplodeButton.classList.remove("active");
+  ctrlBtnWrapper.classList.add("active");
+};
+const FadeInTopWrapperContent = function () {
+  if (!compContentActive) return;
+  activeDotsWrap
+    .querySelector(".dots_wrap-top-wrapper")
+    .classList.remove("active");
+  setTimeout(function () {
+    activeDotsWrap
+      .querySelector(".dots_wrap-top-wrapper")
+      .classList.add("active");
+  }, 25);
+};
+const ResetTopWrapperContent = function (fadeInTopWrapperBool) {
+  if (fadeInTopWrapperBool) FadeInTopWrapperContent();
+  activeDotsWrap.querySelector(".dots_wrap-header").innerHTML = baseHeader;
+  activeDotsWrap.querySelector(".dots_wrap-text").innerHTML = baseText;
+  activeDotsWrap.querySelector(".button-datasheet").classList.remove("active");
+};
+const SetActiveDotsWrapper = function (value) {
+  dotsFlag = value;
+  allDotsAllWrappers.forEach(function (el) {
+    el.classList.remove("active");
+    if (el.classList.contains(dotsFlag)) {
+      el.classList.add("active");
+      activeDotsWrap = el;
+    }
+  });
+};
+const ToggleDotsImage = function (activeImage, state) {
+  const allActiveDotsImages = activeImage.querySelectorAll(".dots_wrap");
+  allActiveDotsImages.forEach(function (el) {
+    state ? el.classList.add("active") : el.classList.remove("active");
+  });
+};
+const PlayActiveDotsVideo = function () {
+  const vidArray = [
+    document.querySelector(`.vid.${dotsFlag}`),
+    document.querySelector(`.vid.${dotsFlag}.mobile-p`),
+  ];
+  vidArray.forEach((el) => el.play());
+};
+const OpenDataSheet = function (value) {
+  compContentActive = false;
+  datasheetsAllWrapper.classList.remove("active");
+  sectionDatasheets.classList.add("active");
+  sectionMapDots.classList.remove("active");
+  navLinkComponents.classList.remove("current");
+  navLinkDatasheets.classList.add("current");
+  ResetTopWrapperContent(false);
+  fromExplodeAssemble = true;
+  document.querySelector(`.datasheet-card-wrapper.${value}`).click();
+};
+//............................................................................
+// DATAZOOMS SECTION
+ctrlBtnWrapper.addEventListener("click", function (e) {
+  const clicked = e.target.closest(".datazoom-btn");
+  if (!clicked) return;
+  if (clicked.classList.contains("back")) {
+    ReturnToExplodeAssemble();
+  } else {
+    dataZoomBackButton.classList.remove("active");
+    imageTextFlag = "text";
+    allTextImageButtons.forEach(
+      (el) => (el.querySelector(".text-image-btn-text").innerHTML = "image")
+    );
+    allDataZoomSubHeadings.forEach((el) => el.classList.add("active"));
+    allDataZoomText.forEach((el) => el.classList.add("active"));
+    allDataZoomWrappers.forEach(function (el) {
+      el.classList.remove("active");
+      el.querySelector(".datazoom-content-wrapper").classList.remove("active");
+      el.querySelector(".dimmer").classList.add("off");
+      el.querySelectorAll(".datazoom-image").forEach((el2) =>
+        el2.classList.remove("active")
+      );
+    });
+    allDataZoomVids.forEach(function (el) {
+      el.currentTime = 0;
+    });
+    datasheetsAllWrapper.style.display = "grid";
+    setTimeout(function () {
+      // dataZoomMainHeading.classList.add("active");
+      datasheetsAllWrapper.classList.add("active");
+    }, 25);
+    fromExplodeAssemble = false;
+    ctrlBtnWrapper.classList.remove("active");
+  }
+});
+datasheetsAllWrapper.addEventListener("click", function (e) {
+  const clicked = e.target.closest(".datasheet-card-wrapper");
+  if (!clicked) return;
+  allDataZoomVids.forEach(function (el) {
+    el.currentTime = 0;
+  });
+  ActivateDataZoomWrapper(clicked.classList[1]);
+});
+allDataZoomVids.forEach(function (el) {
+  el.addEventListener("ended", function () {
+    activeDataZoomComp.querySelector(".dimmer").classList.remove("off");
+    activeDataZoomComp
+      .querySelectorAll(".datazoom-image")
+      .forEach((el2) => el2.classList.add("active"));
+    activeDataZoomComp
+      .querySelector(".datazoom-content-wrapper")
+      .classList.add("active");
+    ActivateDataZoomButons();
+    ctrlBtnWrapper.classList.add("active");
+  });
+});
+allTextImageButtons.forEach(function (el) {
+  el.addEventListener("click", function () {
+    el.querySelector(".text-image-btn-text").innerHTML = imageTextFlag;
+    imageTextFlag === "text"
+      ? (imageTextFlag = "image")
+      : (imageTextFlag = "text");
+    el.parentElement.parentElement
+      .querySelectorAll(".datazoom-subheading")
+      .forEach((el2) => el2.classList.toggle("active"));
+    el.parentElement.parentElement
+      .querySelectorAll(".datazoom-text")
+      .forEach((el3) => el3.classList.toggle("active"));
+    imageTextFlag === "image"
+      ? el.parentElement.parentElement.parentElement
+          .querySelector(".dimmer")
+          .classList.add("off")
+      : el.parentElement.parentElement.parentElement
+          .querySelector(".dimmer")
+          .classList.remove("off");
+  });
+});
+const ActivateDataZoomButons = function () {
+  allDotsButtons.forEach(function (el) {
+    el.classList.remove("active");
+  });
+  allDataZoomBtns.forEach(function (el) {
+    el.classList.add("active");
+  });
+  if (!fromExplodeAssemble) dataZoomBackButton.classList.remove("active");
+};
+const FlashBlackout = function () {
+  blackout.classList.remove("off");
+  setTimeout(function () {
+    blackout.classList.add("off");
+  }, 5);
+};
+const ReturnToExplodeAssemble = function () {
+  navLinkDatasheets.classList.remove("current");
+  navLinkComponents.classList.add("current");
+  sectionDatasheets.classList.remove("active");
+  document.querySelector(".datazoom-btn.datasheets").click();
+  FlashBlackout();
+  document
+    .querySelector(`.dots_wrap.${explodeOrAssemble}`)
+    .classList.add("active");
+  document
+    .querySelector(`.dots-all-wrapper.${explodeOrAssemble}`)
+    .classList.add("active");
+  sectionMapDots.classList.add("active");
+  ActivateDotsButtons();
+};
+const ActivateDataZoomWrapper = function (value) {
+  ctrlBtnWrapper.classList.remove("active");
+  dataZoomMainHeading.classList.remove("active");
+  datasheetsAllWrapper.classList.remove("active");
+  datasheetsAllWrapper.style.display = "none";
+  if (!fromExplodeAssemble) FlashBlackout();
+  allDataZoomWrappers.forEach(function (el) {
+    el.classList.remove("active");
+    if (el.classList.contains(value)) {
+      el.classList.add("active");
+      el.querySelectorAll(".vid.datazoom").forEach(function (el2) {
+        setTimeout(function () {
+          el2.play();
+        }, 200);
+      });
+    }
+  });
+  activeDataZoomComp = document.querySelector(
+    `.datazooms-comp-wrapper.${value}`
+  );
+};
 // //...........................................................
 // //VIDEO CHAINING
 // const ctrlBtnWrapper = document.querySelector(".ctrl-btn-wrapper");
@@ -57,400 +600,6 @@
 //   });
 //   value.play();
 // };
-//...........................................................
-//VIDEO VARIABLES
-// const allVidAllWrappers = document.querySelectorAll(".vid-all-wrapper");
-// const allContentWrappers = document.querySelectorAll(".vid-content-wrapper");
-// const allVidWrappers = document.querySelectorAll(".vid-wrapper");
-// const allVids = document.querySelectorAll(".vid");
-// const allVidEndWrappers = document.querySelectorAll(".vid-end-wrapper");
-// const vidBtnContainer = document.querySelector(".btn-vid-container");
-// let vidFlag;
-// let newTimer;
-// //...........................................................
-// // VARIABLES
-// //...........................................................
-// //VIDEO
-// allVids.forEach(function (el) {
-//   el.addEventListener("ended", function () {
-//     el.parentElement.parentElement.parentElement
-//       .querySelector(".vid-content-wrapper")
-//       .classList.add("active");
-//     SetActiveEndVidAndPlay(vidFlag);
-//     ReplayIntroVid();
-//   });
-// });
-// vidBtnContainer.addEventListener("click", function (e) {
-//   const clicked = e.target.closest(".button-vid");
-//   if (!clicked) return;
-//   vidFlag = clicked.classList[1];
-//   SetActiveVidAndPlay(vidFlag);
-// });
-// const SetActiveVidAndPlay = function (vidFlag) {
-//   clearTimeout(newTimer);
-//   allContentWrappers.forEach(function (el) {
-//     el.classList.remove("active");
-//     if (vidFlag === "rotation" && el.classList.contains("rotation")) {
-//       el.classList.add("active");
-//     }
-//   });
-//   allVids.forEach(function (el) {
-//     el.currentTime = 0;
-//   });
-//   allVidEndWrappers.forEach(function (el) {
-//     el.classList.remove("active");
-//   });
-//   allVidAllWrappers.forEach(function (el) {
-//     el.classList.remove("active");
-//     if (el.classList.contains(vidFlag)) {
-//       el.classList.add("active");
-//     }
-//   });
-//   allVidWrappers.forEach(function (el) {
-//     el.classList.add("active");
-//   });
-//   document.querySelector(`.vid.${vidFlag}`).play();
-// };
-// const SetActiveEndVidAndPlay = function (vidFlag) {
-//   allVidWrappers.forEach(function (el) {
-//     el.classList.remove("active");
-//   });
-//   allVidEndWrappers.forEach(function (el) {
-//     el.classList.remove("active");
-//     if (el.classList.contains(vidFlag)) {
-//       el.classList.add("active");
-//     }
-//     document.querySelector(`.vid.end.${vidFlag}`).play();
-//   });
-// };
-// const ReplayIntroVid = function () {
-//   newTimer = setTimeout(() => {
-//     SetActiveVidAndPlay("rotation");
-//   }, 3000);
-// };
-//............................................................................
-// MAP DOTS DEFINITIONS
-const sectionMapDots = document.querySelector(".section_map-dots");
-const allDatasheetButtons = document.querySelectorAll(".button-datasheet");
-const baseHeader = "Explode/Assemble";
-const baseText =
-  "Hover/click the dots for details about particular components. Use buttons below for exploded/assembled views.";
-const allDotTopContentWrappers = document.querySelectorAll(
-  ".dots_wrap-top-wrapper"
-);
-const allDots = document.querySelectorAll(".map_dot");
-const ctrlBtnWrapper = document.querySelector(".ctrl-btn-wrapper");
-const allDotsButtons = document.querySelectorAll(".dots-btn");
-const allDotAllWrappers = document.querySelectorAll(".dots-all-wrapper");
-const vidExplode = document.querySelector(".vid.explode");
-const vidExplodeMobileP = document.querySelector(".vid.explode.mobile-p");
-const vidAssemble = document.querySelector(".vid.assemble");
-const vidAssembleMobileP = document.querySelector(".vid.assemble.mobile-p");
-const allDotVids = [vidExplode, vidAssemble];
-const allDotVidsMobileP = [vidExplodeMobileP, vidAssembleMobileP];
-const dotExplodeButton = document.querySelector(".dots-btn.explode");
-const dotAssembleButton = document.querySelector(".dots-btn.assemble");
-const allDotButtons = [dotExplodeButton, dotAssembleButton];
-const explodeDotsWrapper = document.querySelector(".dots-all-wrapper.explode");
-let activeDotsWrap = explodeDotsWrapper;
-let dotsFlag;
-let datasheetButtonTimer;
-let explodeOrAssemble;
-let compNumberString;
-let compContentActive = false;
-//............................................................................
-// DATAZOOMS DEFINITIONS;
-const blackout = document.querySelector(".blackout");
-const dataZoomBackButton = document.querySelector(".datazoom-btn.back");
-const sectionDataZooms = document.querySelector(".section_datasheets");
-const allDataZoomBtns = document.querySelectorAll(".datazoom-btn");
-const datasheetsAllWrapper = document.querySelector(".datasheets-all-wrapper");
-const allDataZoomWrappers = document.querySelectorAll(
-  ".datazooms-comp-wrapper"
-);
-const allDataZoomVids = document.querySelectorAll(".vid.datazoom");
-const allTextImageButtons = document.querySelectorAll(".text-image-btn");
-const allDataZoomSubHeadings = document.querySelectorAll(
-  ".datazoom-subheading"
-);
-const allDataZoomText = document.querySelectorAll(".datazoom-text");
-let activeDataZoomComp;
-let imageTextFlag = "text";
-let fromExplodeAssemble = false;
-//............................................................................
-//MAP DOTS
-allDots.forEach(function (el) {
-  el.addEventListener("click", function () {
-    compContentActive = true;
-    FadeInTopWrapperContent();
-    activeDotsWrap.querySelector(".dots_wrap-header").innerHTML =
-      el.querySelector(".map_dot-name").innerHTML;
-    activeDotsWrap.querySelector(".dots_wrap-text").innerHTML =
-      el.querySelector(".map_dot-description").innerHTML;
-    activeDotsWrap.querySelector(".button-datasheet").classList.add("active");
-  });
-  el.addEventListener("mouseover", function () {
-    clearTimeout(datasheetButtonTimer);
-  });
-  el.addEventListener("mouseout", function () {
-    datasheetButtonTimer = setTimeout(function () {
-      ResetTopWrapperContent(true);
-      compContentActive = false;
-    }, 1500);
-  });
-});
-allDotTopContentWrappers.forEach(function (el) {
-  el.addEventListener("mouseover", function () {
-    clearTimeout(datasheetButtonTimer);
-  });
-  el.addEventListener("mouseout", function () {
-    datasheetButtonTimer = setTimeout(function () {
-      ResetTopWrapperContent(true);
-      compContentActive = false;
-    }, 1500);
-  });
-});
-allDotVids.forEach(function (el) {
-  el.addEventListener("ended", function () {
-    const pastActiveDotsWrap = activeDotsWrap;
-    if (activeDotsWrap.classList.contains("explode")) {
-      SetActiveDotsWrapper("assemble");
-    } else {
-      SetActiveDotsWrapper("explode");
-    }
-    ToggleDotsImage(pastActiveDotsWrap, true);
-    allDotButtons.forEach(function (el) {
-      el.classList.remove("active");
-      if (el.classList.contains(dotsFlag)) {
-        el.classList.add("active");
-      }
-    });
-    ToggleDotsImage(activeDotsWrap, true);
-    compContentActive = true;
-    FadeInTopWrapperContent();
-    compContentActive = false;
-  });
-});
-allDatasheetButtons.forEach(function (el) {
-  el.addEventListener("click", function () {
-    explodeOrAssemble = el.parentElement.parentElement.classList[1];
-    const compNumber =
-      el.parentElement.querySelector(".dots_wrap-header").innerHTML;
-    if (compNumber.length > 11) {
-      compNumberString = `comp-${compNumber.slice(-2)}`;
-    } else {
-      compNumberString = `comp-${compNumber[compNumber.length - 1]}`;
-    }
-    OpenDataSheet(compNumberString, explodeOrAssemble);
-  });
-});
-ctrlBtnWrapper.addEventListener("click", function (e) {
-  const clicked = e.target.closest(".dots-btn");
-  if (!clicked) return;
-  if (clicked.classList.contains("datasheets")) {
-    activeDotsWrap
-      .querySelector(".dots_wrap-top-wrapper")
-      .classList.add("active");
-    return;
-  }
-  allDotVids.forEach(function (el) {
-    el.currentTime = 0;
-  });
-  allDotVidsMobileP.forEach(function (el) {
-    el.currentTime = 0;
-  });
-  dotsFlag = clicked.classList[1];
-  activeDotsWrap
-    .querySelector(".dots_wrap-top-wrapper")
-    .classList.remove("active");
-  ToggleDotsImage(activeDotsWrap, false);
-  ResetTopWrapperContent(false);
-  PlayActiveDotsVideo();
-});
-const ActivateDotsButtons = function () {
-  allDataZoomBtns.forEach(function (el) {
-    el.classList.remove("active");
-  });
-  allDotButtons.forEach(function (el) {
-    el.classList.add("active");
-  });
-  if (activeDotsWrap.classList.contains("explode")) {
-    dotAssembleButton.classList.remove("active");
-  } else dotExplodeButton.classList.remove("active");
-  ctrlBtnWrapper.classList.add("active");
-};
-const FadeInTopWrapperContent = function () {
-  if (!compContentActive) return;
-  activeDotsWrap
-    .querySelector(".dots_wrap-top-wrapper")
-    .classList.remove("active");
-  setTimeout(function () {
-    activeDotsWrap
-      .querySelector(".dots_wrap-top-wrapper")
-      .classList.add("active");
-  }, 25);
-};
-const ResetTopWrapperContent = function (fadeInTopWrapperBool) {
-  if (fadeInTopWrapperBool) FadeInTopWrapperContent();
-  activeDotsWrap.querySelector(".dots_wrap-header").innerHTML = baseHeader;
-  activeDotsWrap.querySelector(".dots_wrap-text").innerHTML = baseText;
-  activeDotsWrap.querySelector(".button-datasheet").classList.remove("active");
-};
-const SetActiveDotsWrapper = function (value) {
-  dotsFlag = value;
-  allDotAllWrappers.forEach(function (el) {
-    el.classList.remove("active");
-    if (el.classList.contains(dotsFlag)) {
-      el.classList.add("active");
-      activeDotsWrap = el;
-    }
-  });
-};
-const ToggleDotsImage = function (activeImage, state) {
-  const allActiveDotsImages = activeImage.querySelectorAll(".dots_wrap");
-  allActiveDotsImages.forEach(function (el) {
-    state ? el.classList.add("active") : el.classList.remove("active");
-  });
-};
-const PlayActiveDotsVideo = function () {
-  const vidArray = [
-    document.querySelector(`.vid.${dotsFlag}`),
-    document.querySelector(`.vid.${dotsFlag}.mobile-p`),
-  ];
-  vidArray.forEach((el) => el.play());
-};
-const OpenDataSheet = function (value) {
-  compContentActive = false;
-  sectionDataZooms.classList.add("active");
-  sectionMapDots.classList.remove("active");
-  ResetTopWrapperContent(false);
-  fromExplodeAssemble = true;
-  document.querySelector(`.datasheet-card-wrapper.${value}`).click();
-};
-//............................................................................
-// DATAZOOMS
-ctrlBtnWrapper.addEventListener("click", function (e) {
-  const clicked = e.target.closest(".datazoom-btn");
-  if (!clicked) return;
-  if (clicked.classList.contains("back")) {
-    ReturnToExplodeAssemble();
-  } else {
-    document.querySelector(".datazoom-btn.back").classList.remove("active");
-    imageTextFlag = "text";
-    allTextImageButtons.forEach(
-      (el) => (el.querySelector(".text-image-btn-text").innerHTML = "image")
-    );
-    allDataZoomSubHeadings.forEach((el) => el.classList.add("active"));
-    allDataZoomText.forEach((el) => el.classList.add("active"));
-    allDataZoomWrappers.forEach(function (el) {
-      el.classList.remove("active");
-      el.querySelector(".datazoom-content-wrapper").classList.remove("active");
-      el.querySelector(".dimmer").classList.add("off");
-      el.querySelectorAll(".datazoom-image").forEach((el2) =>
-        el2.classList.remove("active")
-      );
-    });
-    allDataZoomVids.forEach(function (el) {
-      el.currentTime = 0;
-    });
-    datasheetsAllWrapper.style.display = "grid";
-    setTimeout(function () {
-      datasheetsAllWrapper.classList.add("active");
-    }, 25);
-    fromExplodeAssemble = false;
-    ctrlBtnWrapper.classList.remove("active");
-  }
-});
-datasheetsAllWrapper.addEventListener("click", function (e) {
-  const clicked = e.target.closest(".datasheet-card-wrapper");
-  if (!clicked) return;
-  allDataZoomVids.forEach(function (el) {
-    el.currentTime = 0;
-  });
-  ActivateDataZoomWrapper(clicked.classList[1]);
-});
-allDataZoomVids.forEach(function (el) {
-  el.addEventListener("ended", function () {
-    activeDataZoomComp.querySelector(".dimmer").classList.remove("off");
-    activeDataZoomComp
-      .querySelectorAll(".datazoom-image")
-      .forEach((el2) => el2.classList.add("active"));
-    activeDataZoomComp
-      .querySelector(".datazoom-content-wrapper")
-      .classList.add("active");
-    ActivateDataZoomButons();
-    ctrlBtnWrapper.classList.add("active");
-  });
-});
-allTextImageButtons.forEach(function (el) {
-  el.addEventListener("click", function () {
-    el.querySelector(".text-image-btn-text").innerHTML = imageTextFlag;
-    imageTextFlag === "text"
-      ? (imageTextFlag = "image")
-      : (imageTextFlag = "text");
-    el.parentElement.parentElement
-      .querySelectorAll(".datazoom-subheading")
-      .forEach((el2) => el2.classList.toggle("active"));
-    el.parentElement.parentElement
-      .querySelectorAll(".datazoom-text")
-      .forEach((el3) => el3.classList.toggle("active"));
-    imageTextFlag === "image"
-      ? el.parentElement.parentElement.parentElement
-          .querySelector(".dimmer")
-          .classList.add("off")
-      : el.parentElement.parentElement.parentElement
-          .querySelector(".dimmer")
-          .classList.remove("off");
-  });
-});
-const ActivateDataZoomButons = function () {
-  allDotButtons.forEach(function (el) {
-    el.classList.remove("active");
-  });
-  allDataZoomBtns.forEach(function (el) {
-    el.classList.add("active");
-  });
-  if (!fromExplodeAssemble) dataZoomBackButton.classList.remove("active");
-};
-const FlashBlackout = function () {
-  blackout.classList.remove("off");
-  setTimeout(function () {
-    blackout.classList.add("off");
-  }, 5);
-};
-const ReturnToExplodeAssemble = function () {
-  sectionDataZooms.classList.remove("active");
-  document.querySelector(".datazoom-btn.datasheets").click();
-  FlashBlackout();
-  document
-    .querySelector(`.dots_wrap.${explodeOrAssemble}`)
-    .classList.add("active");
-  document
-    .querySelector(`.dots-all-wrapper.${explodeOrAssemble}`)
-    .classList.add("active");
-  sectionMapDots.classList.add("active");
-  ActivateDotsButtons();
-};
-const ActivateDataZoomWrapper = function (value) {
-  ctrlBtnWrapper.classList.remove("active");
-  datasheetsAllWrapper.classList.remove("active");
-  datasheetsAllWrapper.style.display = "none";
-  if (!fromExplodeAssemble) FlashBlackout();
-  allDataZoomWrappers.forEach(function (el) {
-    el.classList.remove("active");
-    if (el.classList.contains(value)) {
-      el.classList.add("active");
-      el.querySelectorAll(".vid.datazoom").forEach(function (el2) {
-        setTimeout(function () {
-          el2.play();
-        }, 900);
-      });
-    }
-  });
-  activeDataZoomComp = document.querySelector(
-    `.datazooms-comp-wrapper.${value}`
-  );
-};
 //............................................................................
 //SIZING & SNAPING
 // const vidSection = document.querySelector(".section_spacing");
