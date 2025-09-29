@@ -11,15 +11,23 @@
   var sectionFeatures = document.querySelector(".section_features");
   var sectionMapDots = document.querySelector(".section_map-dots");
   var sectionDatasheets = document.querySelector(".section_datasheets");
-  var allSections = [sectionFeatures, sectionMapDots, sectionDatasheets];
+  var sectionInstructions = document.querySelector(".section_instructions");
+  var allSections = [
+    sectionFeatures,
+    sectionMapDots,
+    sectionDatasheets,
+    sectionInstructions
+  ];
   var ctrlBtnWrapper = document.querySelector(".ctrl-btn-wrapper");
   var allFeatureButtons = document.querySelectorAll(".feature-btn");
   var allDotsButtons = document.querySelectorAll(".dots-btn");
   var allDataZoomBtns = document.querySelectorAll(".datazoom-btn");
+  var allInstructionButtons = document.querySelectorAll(".instruction-btn");
   var allCtrlButtons = [
     ...allFeatureButtons,
     ...allDotsButtons,
-    ...allDataZoomBtns
+    ...allDataZoomBtns,
+    ...allInstructionButtons
   ];
   var allFeatureVidAllWrappers = document.querySelectorAll(".vid-all-wrapper");
   var allFeatureVidContentWrappers = document.querySelectorAll(
@@ -64,6 +72,11 @@
   var allDataZoomWrappers = document.querySelectorAll(
     ".datazooms-comp-wrapper"
   );
+  var allDataZoomContentWrappers = document.querySelectorAll(
+    ".datazoom-content-wrapper"
+  );
+  var allDataZoomDimmers = document.querySelectorAll(".dimmer");
+  var allDataZoomImages = document.querySelectorAll(".datazoom-image");
   var allDataZoomVids = document.querySelectorAll(".vid.datazoom");
   var allTextImageButtons = document.querySelectorAll(".text-image-btn");
   var dataZoomMainHeading = document.querySelector(".datazoom-main-heading");
@@ -74,6 +87,23 @@
   var activeDataZoomComp;
   var imageTextFlag = "text";
   var fromExplodeAssemble = false;
+  var allInstructionAllWrappers = document.querySelectorAll(
+    ".instruction-all-wrapper"
+  );
+  var instructionsContentWrapper = document.querySelector(
+    ".instructions-content-wrapper"
+  );
+  var allInstructionVidWrappers = document.querySelectorAll(
+    ".instruction-vid-wrapper"
+  );
+  var allInstructionVids = document.querySelectorAll(".vid.instruction");
+  var allClickDivs = document.querySelectorAll(".click-div");
+  var pauseWrapper = document.querySelector(".pause-wrapper");
+  var ActiveInstructionAllWrapper;
+  var currentVid = 1;
+  var instructionVidTimer;
+  var pauseFlag = false;
+  var instructionVidLooping = false;
   navBar.addEventListener("click", function(e) {
     const clicked = e.target.closest(".nav_menu_link");
     if (!clicked) return;
@@ -115,6 +145,15 @@
         break;
       case "components":
         ResetAndPauseAllVideos();
+        allDataZoomContentWrappers.forEach(function(el) {
+          el.classList.remove("active");
+        });
+        allDataZoomDimmers.forEach(function(el) {
+          el.classList.add("off");
+        });
+        allDataZoomImages.forEach(function(el) {
+          el.classList.remove("active");
+        });
         allDotsAllWrappers.forEach(function(el) {
           el.classList.remove("active");
         });
@@ -130,6 +169,7 @@
         FlashBlackout();
         break;
       case "datasheets":
+        ResetAndPauseAllVideos();
         dataZoomBackButton.classList.remove("active");
         imageTextFlag = "text";
         allTextImageButtons.forEach(
@@ -157,7 +197,13 @@
         FlashBlackout();
         break;
       case "instructions":
+        ResetToMainScreen();
+        allInstructionButtons.forEach(function(el) {
+          el.classList.add("active");
+        });
+        ctrlBtnWrapper.classList.add("active");
         ResetAndPauseAllVideos();
+        sectionInstructions.classList.add("active");
         FlashBlackout();
         break;
     }
@@ -180,6 +226,10 @@
       el.pause();
     });
     allDataZoomVids.forEach(function(el) {
+      el.currentTime = 0;
+      el.pause();
+    });
+    allInstructionVids.forEach(function(el) {
       el.currentTime = 0;
       el.pause();
     });
@@ -450,7 +500,7 @@
     blackout.classList.remove("off");
     setTimeout(function() {
       blackout.classList.add("off");
-    }, 5);
+    }, 50);
   };
   var ReturnToExplodeAssemble = function() {
     navLinkDatasheets.classList.remove("current");
@@ -483,5 +533,112 @@
     activeDataZoomComp = document.querySelector(
       `.datazooms-comp-wrapper.${value}`
     );
+  };
+  allClickDivs.forEach(function(el) {
+    el.addEventListener("click", function() {
+      if (pauseFlag) {
+        ActiveInstructionAllWrapper.querySelector(".vid.instruction").play();
+        ActiveInstructionAllWrapper.querySelector(
+          ".vid.instruction-mobile-p"
+        ).play();
+        pauseWrapper.classList.remove("active");
+        pauseFlag = false;
+      } else {
+        clearTimeout(instructionVidTimer);
+        instructionVidTimer = null;
+        ActiveInstructionAllWrapper.querySelector(".vid.instruction").pause();
+        ActiveInstructionAllWrapper.querySelector(
+          ".vid.instruction-mobile-p"
+        ).pause();
+        pauseWrapper.classList.add("active");
+        pauseFlag = true;
+      }
+    });
+  });
+  allInstructionVids.forEach(function(el) {
+    el.addEventListener("ended", function() {
+      if (pauseFlag) {
+        el.pause();
+        el.parentElement.parentElement.parentElement.querySelector(".vid.instruction-mobile-p").pause();
+      } else {
+        instructionVidTimer = setTimeout(function() {
+          currentVid += 1;
+          if (currentVid > 4 && instructionVidLooping) {
+            currentVid = 1;
+          } else if (currentVid > 4 && !instructionVidLooping) {
+            FlashBlackout();
+            ResetToMainScreen();
+            return;
+          }
+          ActivateAllWrapperAndPlayVids(`step-${currentVid}`);
+        }, 2e3);
+      }
+    });
+  });
+  allInstructionButtons.forEach(function(el) {
+    el.addEventListener("mouseenter", function() {
+      el.classList.add("hovered");
+    });
+    el.addEventListener("mouseleave", function() {
+      el.classList.remove("hovered");
+    });
+  });
+  ctrlBtnWrapper.addEventListener("click", function(e) {
+    const clicked = e.target.closest(".instruction-btn");
+    if (!clicked) return;
+    clearTimeout(instructionVidTimer);
+    instructionVidTimer = null;
+    instructionsContentWrapper.classList.remove("active");
+    pauseFlag = false;
+    pauseWrapper.classList.remove("active");
+    allInstructionAllWrappers.forEach(function(el) {
+      el.classList.remove("active");
+    });
+    allInstructionVids.forEach(function(el) {
+      el.currentTime = 0;
+      el.pause();
+    });
+    currentVid = Array.from(allInstructionButtons).indexOf(clicked) + 1;
+    ActivateAllWrapperAndPlayVids(`step-${currentVid}`);
+  });
+  var ActivateAllWrapperAndPlayVids = function(value) {
+    allInstructionAllWrappers.forEach(function(el) {
+      el.classList.remove("active");
+      if (el.classList.contains(value)) {
+        el.classList.add("active");
+        ActiveInstructionAllWrapper = el;
+        ActiveInstructionAllWrapper.querySelectorAll(".vid.instruction").forEach(
+          function(el2) {
+            el2.play();
+          }
+        );
+        ActiveInstructionAllWrapper.querySelectorAll(
+          ".vid.instruction-mobile-p"
+        ).forEach(function(el2) {
+          el2.play();
+        });
+      }
+    });
+    allInstructionButtons.forEach(function(el) {
+      el.classList.remove("current", "hovered");
+      if (el.classList.contains(value)) el.classList.add("current");
+    });
+  };
+  var ResetToMainScreen = function() {
+    pauseFlag = false;
+    pauseWrapper.classList.remove("active");
+    sectionInstructions.classList.add("active");
+    instructionsContentWrapper.classList.add("active");
+    allInstructionButtons.forEach(function(el) {
+      el.classList.remove("current");
+    });
+    allInstructionAllWrappers.forEach(function(el) {
+      el.classList.remove("active");
+      if (el.classList.contains("step-1")) el.classList.add("active");
+      el.querySelector(".vid.instruction").currentTime = 0;
+      el.querySelector(".vid.instruction-mobile-p").currentTime = 0;
+      el.querySelector(".vid.instruction").pause();
+      el.querySelector(".vid.instruction-mobile-p").pause();
+    });
   };
 })();

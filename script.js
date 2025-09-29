@@ -14,15 +14,23 @@ const allNavLinks = document.querySelectorAll(".nav_menu_link");
 const sectionFeatures = document.querySelector(".section_features");
 const sectionMapDots = document.querySelector(".section_map-dots");
 const sectionDatasheets = document.querySelector(".section_datasheets");
-const allSections = [sectionFeatures, sectionMapDots, sectionDatasheets];
+const sectionInstructions = document.querySelector(".section_instructions");
+const allSections = [
+  sectionFeatures,
+  sectionMapDots,
+  sectionDatasheets,
+  sectionInstructions,
+];
 const ctrlBtnWrapper = document.querySelector(".ctrl-btn-wrapper");
 const allFeatureButtons = document.querySelectorAll(".feature-btn");
 const allDotsButtons = document.querySelectorAll(".dots-btn");
 const allDataZoomBtns = document.querySelectorAll(".datazoom-btn");
+const allInstructionButtons = document.querySelectorAll(".instruction-btn");
 const allCtrlButtons = [
   ...allFeatureButtons,
   ...allDotsButtons,
   ...allDataZoomBtns,
+  ...allInstructionButtons,
 ];
 //............................................................................
 //FEATURES DEFINITIONS
@@ -74,6 +82,11 @@ const datasheetsAllWrapper = document.querySelector(".datasheets-all-wrapper");
 const allDataZoomWrappers = document.querySelectorAll(
   ".datazooms-comp-wrapper"
 );
+const allDataZoomContentWrappers = document.querySelectorAll(
+  ".datazoom-content-wrapper"
+);
+const allDataZoomDimmers = document.querySelectorAll(".dimmer");
+const allDataZoomImages = document.querySelectorAll(".datazoom-image");
 const allDataZoomVids = document.querySelectorAll(".vid.datazoom");
 const allTextImageButtons = document.querySelectorAll(".text-image-btn");
 const dataZoomMainHeading = document.querySelector(".datazoom-main-heading");
@@ -84,6 +97,25 @@ const allDataZoomText = document.querySelectorAll(".datazoom-text");
 let activeDataZoomComp;
 let imageTextFlag = "text";
 let fromExplodeAssemble = false;
+//............................................................................
+//INSTRUCTIONS DEFINITIONS;
+const allInstructionAllWrappers = document.querySelectorAll(
+  ".instruction-all-wrapper"
+);
+const instructionsContentWrapper = document.querySelector(
+  ".instructions-content-wrapper"
+);
+const allInstructionVidWrappers = document.querySelectorAll(
+  ".instruction-vid-wrapper"
+);
+const allInstructionVids = document.querySelectorAll(".vid.instruction");
+const allClickDivs = document.querySelectorAll(".click-div");
+const pauseWrapper = document.querySelector(".pause-wrapper");
+let ActiveInstructionAllWrapper;
+let currentVid = 1;
+let instructionVidTimer;
+let pauseFlag = false;
+let instructionVidLooping = false;
 //............................................................................
 //UNIVERSAL OPERATIONS
 navBar.addEventListener("click", function (e) {
@@ -127,6 +159,15 @@ const ActivateSection = function (value) {
       break;
     case "components":
       ResetAndPauseAllVideos();
+      allDataZoomContentWrappers.forEach(function (el) {
+        el.classList.remove("active");
+      });
+      allDataZoomDimmers.forEach(function (el) {
+        el.classList.add("off");
+      });
+      allDataZoomImages.forEach(function (el) {
+        el.classList.remove("active");
+      });
       allDotsAllWrappers.forEach(function (el) {
         el.classList.remove("active");
       });
@@ -144,6 +185,7 @@ const ActivateSection = function (value) {
       FlashBlackout();
       break;
     case "datasheets":
+      ResetAndPauseAllVideos();
       dataZoomBackButton.classList.remove("active");
       imageTextFlag = "text";
       allTextImageButtons.forEach(
@@ -172,7 +214,13 @@ const ActivateSection = function (value) {
       FlashBlackout();
       break;
     case "instructions":
+      ResetToMainScreen();
+      allInstructionButtons.forEach(function (el) {
+        el.classList.add("active");
+      });
+      ctrlBtnWrapper.classList.add("active");
       ResetAndPauseAllVideos();
+      sectionInstructions.classList.add("active");
       FlashBlackout();
       break;
   }
@@ -195,6 +243,10 @@ const ResetAndPauseAllVideos = function () {
     el.pause();
   });
   allDataZoomVids.forEach(function (el) {
+    el.currentTime = 0;
+    el.pause();
+  });
+  allInstructionVids.forEach(function (el) {
     el.currentTime = 0;
     el.pause();
   });
@@ -441,7 +493,6 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
     });
     datasheetsAllWrapper.style.display = "grid";
     setTimeout(function () {
-      // dataZoomMainHeading.classList.add("active");
       datasheetsAllWrapper.classList.add("active");
     }, 25);
     fromExplodeAssemble = false;
@@ -503,7 +554,7 @@ const FlashBlackout = function () {
   blackout.classList.remove("off");
   setTimeout(function () {
     blackout.classList.add("off");
-  }, 5);
+  }, 50);
 };
 const ReturnToExplodeAssemble = function () {
   navLinkDatasheets.classList.remove("current");
@@ -540,6 +591,117 @@ const ActivateDataZoomWrapper = function (value) {
   activeDataZoomComp = document.querySelector(
     `.datazooms-comp-wrapper.${value}`
   );
+};
+//............................................................................
+//INSTRUCTIONS SECTION
+allClickDivs.forEach(function (el) {
+  el.addEventListener("click", function () {
+    if (pauseFlag) {
+      ActiveInstructionAllWrapper.querySelector(".vid.instruction").play();
+      ActiveInstructionAllWrapper.querySelector(
+        ".vid.instruction-mobile-p"
+      ).play();
+      pauseWrapper.classList.remove("active");
+      pauseFlag = false;
+    } else {
+      clearTimeout(instructionVidTimer);
+      instructionVidTimer = null;
+      ActiveInstructionAllWrapper.querySelector(".vid.instruction").pause();
+      ActiveInstructionAllWrapper.querySelector(
+        ".vid.instruction-mobile-p"
+      ).pause();
+      pauseWrapper.classList.add("active");
+      pauseFlag = true;
+    }
+  });
+});
+allInstructionVids.forEach(function (el) {
+  el.addEventListener("ended", function () {
+    if (pauseFlag) {
+      el.pause();
+      el.parentElement.parentElement.parentElement
+        .querySelector(".vid.instruction-mobile-p")
+        .pause();
+    } else {
+      instructionVidTimer = setTimeout(function () {
+        currentVid += 1;
+        if (currentVid > 4 && instructionVidLooping) {
+          currentVid = 1;
+        } else if (currentVid > 4 && !instructionVidLooping) {
+          FlashBlackout();
+          ResetToMainScreen();
+          return;
+        }
+        ActivateAllWrapperAndPlayVids(`step-${currentVid}`);
+      }, 2000);
+    }
+  });
+});
+allInstructionButtons.forEach(function (el) {
+  el.addEventListener("mouseenter", function () {
+    el.classList.add("hovered");
+  });
+  el.addEventListener("mouseleave", function () {
+    el.classList.remove("hovered");
+  });
+});
+ctrlBtnWrapper.addEventListener("click", function (e) {
+  const clicked = e.target.closest(".instruction-btn");
+  if (!clicked) return;
+  clearTimeout(instructionVidTimer);
+  instructionVidTimer = null;
+  instructionsContentWrapper.classList.remove("active");
+  pauseFlag = false;
+  pauseWrapper.classList.remove("active");
+  allInstructionAllWrappers.forEach(function (el) {
+    el.classList.remove("active");
+  });
+  allInstructionVids.forEach(function (el) {
+    el.currentTime = 0;
+    el.pause();
+  });
+  currentVid = Array.from(allInstructionButtons).indexOf(clicked) + 1;
+  ActivateAllWrapperAndPlayVids(`step-${currentVid}`);
+});
+const ActivateAllWrapperAndPlayVids = function (value) {
+  allInstructionAllWrappers.forEach(function (el) {
+    el.classList.remove("active");
+    if (el.classList.contains(value)) {
+      el.classList.add("active");
+      ActiveInstructionAllWrapper = el;
+      ActiveInstructionAllWrapper.querySelectorAll(".vid.instruction").forEach(
+        function (el2) {
+          el2.play();
+        }
+      );
+      ActiveInstructionAllWrapper.querySelectorAll(
+        ".vid.instruction-mobile-p"
+      ).forEach(function (el2) {
+        el2.play();
+      });
+    }
+  });
+  allInstructionButtons.forEach(function (el) {
+    el.classList.remove("current", "hovered");
+    if (el.classList.contains(value)) el.classList.add("current");
+  });
+};
+const ResetToMainScreen = function () {
+  pauseFlag = false;
+  pauseWrapper.classList.remove("active");
+  sectionInstructions.classList.add("active");
+  instructionsContentWrapper.classList.add("active");
+  allInstructionButtons.forEach(function (el) {
+    el.classList.remove("current");
+  });
+  allInstructionAllWrappers.forEach(function (el) {
+    el.classList.remove("active");
+    if (el.classList.contains("step-1")) el.classList.add("active");
+    el.querySelector(".vid.instruction").currentTime = 0;
+    el.querySelector(".vid.instruction-mobile-p").currentTime = 0;
+    el.querySelector(".vid.instruction").pause();
+    el.querySelector(".vid.instruction-mobile-p").pause();
+  });
 };
 // //...........................................................
 // //VIDEO CHAINING
