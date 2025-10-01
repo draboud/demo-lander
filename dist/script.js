@@ -1,5 +1,14 @@
 (() => {
   // script.js
+  var blackoutFlag = true;
+  var FEATURE_MAIN_VID_REPLAY = 1e4;
+  var DATASHEET_BUTTON_TIMER = 1500;
+  var FADE_IN_COMPONENTS_HEADING = 25;
+  var FADE_IN_DATASHEETS_GRID = 25;
+  var FLASH_BLACKOUT = 50;
+  var FLASH_START_BLACKOUT = 200;
+  var PLAY_DATASHEET_VID_AFTER_DELAY = 200;
+  var PAUSE_BETWEEN_INSTRUCTION_VIDS = 2e3;
   var navBar = document.querySelector(".nav_menu");
   var navLinkFeatures = document.querySelector(".nav_menu_link.features");
   var navLinkComponents = document.querySelector(".nav_menu_link.components");
@@ -35,7 +44,6 @@
   );
   var allFeatureVidWrappers = document.querySelectorAll(".vid-wrapper");
   var allFeatureVids = document.querySelectorAll(".vid.feature");
-  var allFeatureVidEndWrappers = document.querySelectorAll(".vid-end-wrapper");
   var allFeatureEndVids = document.querySelectorAll(".vid.end");
   var activeVidAllWrapper;
   var vidFlag;
@@ -49,9 +57,9 @@
   var allDots = document.querySelectorAll(".map_dot");
   var allDotsAllWrappers = document.querySelectorAll(".dots-all-wrapper");
   var dotVidExplode = document.querySelector(".vid.explode");
-  var dotVidExplodeMobileP = document.querySelector(".vid.explode.mobile-p");
+  var dotVidExplodeMobileP = document.querySelector(".vid.explode-mobile-p");
   var dotVidAssemble = document.querySelector(".vid.assemble");
-  var dotVidAssembleMobileP = document.querySelector(".vid.assemble.mobile-p");
+  var dotVidAssembleMobileP = document.querySelector(".vid.assemble-mobile-p");
   var allDotVids = [dotVidExplode, dotVidAssemble];
   var allDotVidsMobileP = [dotVidExplodeMobileP, dotVidAssembleMobileP];
   var dotExplodeButton = document.querySelector(".dots-btn.explode");
@@ -65,9 +73,6 @@
   var compContentActive = false;
   var blackout = document.querySelector(".blackout");
   var dataZoomBackButton = document.querySelector(".datazoom-btn.back");
-  var dataZoomDatasheetsButton = document.querySelector(
-    ".datazoom-btn.datasheets"
-  );
   var datasheetsAllWrapper = document.querySelector(".datasheets-all-wrapper");
   var allDataZoomWrappers = document.querySelectorAll(
     ".datazooms-comp-wrapper"
@@ -79,7 +84,6 @@
   var allDataZoomImages = document.querySelectorAll(".datazoom-image");
   var allDataZoomVids = document.querySelectorAll(".vid.datazoom");
   var allTextImageButtons = document.querySelectorAll(".text-image-btn");
-  var dataZoomMainHeading = document.querySelector(".datazoom-main-heading");
   var allDataZoomSubHeadings = document.querySelectorAll(
     ".datazoom-subheading"
   );
@@ -92,9 +96,6 @@
   );
   var instructionsContentWrapper = document.querySelector(
     ".instructions-content-wrapper"
-  );
-  var allInstructionVidWrappers = document.querySelectorAll(
-    ".instruction-vid-wrapper"
   );
   var allInstructionVids = document.querySelectorAll(".vid.instruction");
   var allClickDivs = document.querySelectorAll(".click-div");
@@ -126,12 +127,15 @@
         ResetAndPauseAllVideos();
         allFeatureVidAllWrappers.forEach(function(el) {
           el.classList.remove("active");
-          if (el.classList.contains("rotation")) el.classList.add("active");
+          if (el.classList.contains("rotation")) {
+            el.classList.add("active");
+            activeVidAllWrapper = el;
+          }
         });
         allFeatureVidContentWrappers.forEach(function(el) {
           el.classList.remove("active");
-          if (el.classList.contains("rotation")) el.classList.add("active");
         });
+        activeVidAllWrapper.querySelector(".vid-content-wrapper").classList.add("active");
         allFeatureVids.forEach(function(el) {
           el.classList.remove("active");
           if (el.classList.contains("rotation")) el.classList.add("active");
@@ -141,7 +145,7 @@
         });
         ctrlBtnWrapper.classList.add("active");
         sectionFeatures.classList.add("active");
-        FlashBlackout();
+        if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
         break;
       case "components":
         ResetAndPauseAllVideos();
@@ -157,16 +161,16 @@
         allDotsAllWrappers.forEach(function(el) {
           el.classList.remove("active");
         });
-        document.querySelector(".dots_wrap.explode").classList.add("active");
         explodeDotsWrapper.classList.add("active");
         activeDotsWrap = explodeDotsWrapper;
+        activeDotsWrap.querySelector(".dots_wrap").classList.add("active");
         dotsFlag = "";
         explodeDotsWrapper.querySelector(".dots_wrap-top-wrapper").classList.add("active");
         dotAssembleButton.classList.remove("active");
         dotExplodeButton.classList.add("active");
         ctrlBtnWrapper.classList.add("active");
         sectionMapDots.classList.add("active");
-        FlashBlackout();
+        if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
         break;
       case "datasheets":
         ResetAndPauseAllVideos();
@@ -190,11 +194,11 @@
         datasheetsAllWrapper.style.display = "grid";
         setTimeout(function() {
           datasheetsAllWrapper.classList.add("active");
-        }, 25);
+        }, FADE_IN_DATASHEETS_GRID);
         fromExplodeAssemble = false;
         ctrlBtnWrapper.classList.remove("active");
         sectionDatasheets.classList.add("active");
-        FlashBlackout();
+        if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
         break;
       case "instructions":
         ResetToMainScreen();
@@ -204,7 +208,7 @@
         ctrlBtnWrapper.classList.add("active");
         ResetAndPauseAllVideos();
         sectionInstructions.classList.add("active");
-        FlashBlackout();
+        if (!blackoutFlag) FlashBlackout(FLASH_BLACKOUT);
         break;
     }
   };
@@ -234,6 +238,25 @@
       el.pause();
     });
   };
+  var FlashBlackout = function(value) {
+    blackout.classList.remove("off");
+    setTimeout(function() {
+      blackout.classList.add("off");
+    }, value);
+  };
+  blackout.classList.remove("off");
+  document.querySelector(".nav_component").style.display = "none";
+  window.addEventListener("load", function() {
+    navLinkInstructions.click();
+    navLinkDatasheets.click();
+    navLinkComponents.click();
+    navLinkFeatures.click();
+    blackoutFlag = false;
+    this.setTimeout(function() {
+      this.document.querySelector(".nav_component").style.display = "flex";
+      blackout.classList.add("off");
+    }, FLASH_START_BLACKOUT);
+  });
   ctrlBtnWrapper.addEventListener("click", function(e) {
     const clicked = e.target.closest(".feature-btn");
     if (!clicked) return;
@@ -241,7 +264,7 @@
     clearTimeout(newTimer);
     newTimer = setTimeout(() => {
       SetActiveVidAndPlay("rotation");
-    }, 1e4);
+    }, FEATURE_MAIN_VID_REPLAY);
     SetActiveVidAndPlay(vidFlag);
   });
   allFeatureVids.forEach(function(el) {
@@ -297,8 +320,8 @@
     el.addEventListener("click", function() {
       compContentActive = true;
       FadeInTopWrapperContent();
-      activeDotsWrap.querySelector(".dots_wrap-header").innerHTML = el.querySelector(".map_dot-name").innerHTML;
-      activeDotsWrap.querySelector(".dots_wrap-text").innerHTML = el.querySelector(".map_dot-description").innerHTML;
+      activeDotsWrap.querySelector(".heading-style-h2").innerHTML = el.querySelector(".map_dot-name").innerHTML;
+      activeDotsWrap.querySelector(".text-size-regular").innerHTML = el.querySelector(".map_dot-description").innerHTML;
       activeDotsWrap.querySelector(".button-datasheet").classList.add("active");
     });
     el.addEventListener("mouseover", function() {
@@ -308,7 +331,7 @@
       datasheetButtonTimer = setTimeout(function() {
         ResetTopWrapperContent(true);
         compContentActive = false;
-      }, 1500);
+      }, DATASHEET_BUTTON_TIMER);
     });
   });
   allDotTopContentWrappers.forEach(function(el) {
@@ -319,7 +342,7 @@
       datasheetButtonTimer = setTimeout(function() {
         ResetTopWrapperContent(true);
         compContentActive = false;
-      }, 1500);
+      }, DATASHEET_BUTTON_TIMER);
     });
   });
   allDotVids.forEach(function(el) {
@@ -346,7 +369,7 @@
   allDatasheetButtons.forEach(function(el) {
     el.addEventListener("click", function() {
       explodeOrAssemble = el.parentElement.parentElement.classList[1];
-      const compNumber = el.parentElement.querySelector(".dots_wrap-header").innerHTML;
+      const compNumber = el.parentElement.querySelector(".heading-style-h2").innerHTML;
       if (compNumber.length > 11) {
         compNumberString = `comp-${compNumber.slice(-2)}`;
       } else {
@@ -387,12 +410,12 @@
     activeDotsWrap.querySelector(".dots_wrap-top-wrapper").classList.remove("active");
     setTimeout(function() {
       activeDotsWrap.querySelector(".dots_wrap-top-wrapper").classList.add("active");
-    }, 25);
+    }, FADE_IN_COMPONENTS_HEADING);
   };
   var ResetTopWrapperContent = function(fadeInTopWrapperBool) {
     if (fadeInTopWrapperBool) FadeInTopWrapperContent();
-    activeDotsWrap.querySelector(".dots_wrap-header").innerHTML = baseHeader;
-    activeDotsWrap.querySelector(".dots_wrap-text").innerHTML = baseText;
+    activeDotsWrap.querySelector(".heading-style-h2").innerHTML = baseHeader;
+    activeDotsWrap.querySelector(".text-size-regular").innerHTML = baseText;
     activeDotsWrap.querySelector(".button-datasheet").classList.remove("active");
   };
   var SetActiveDotsWrapper = function(value) {
@@ -414,7 +437,7 @@
   var PlayActiveDotsVideo = function() {
     const vidArray = [
       document.querySelector(`.vid.${dotsFlag}`),
-      document.querySelector(`.vid.${dotsFlag}.mobile-p`)
+      document.querySelector(`.vid.${dotsFlag}-mobile-p`)
     ];
     vidArray.forEach((el) => el.play());
   };
@@ -456,7 +479,7 @@
       datasheetsAllWrapper.style.display = "grid";
       setTimeout(function() {
         datasheetsAllWrapper.classList.add("active");
-      }, 25);
+      }, FADE_IN_DATASHEETS_GRID);
       fromExplodeAssemble = false;
       ctrlBtnWrapper.classList.remove("active");
     }
@@ -496,26 +519,19 @@
     });
     if (!fromExplodeAssemble) dataZoomBackButton.classList.remove("active");
   };
-  var FlashBlackout = function() {
-    blackout.classList.remove("off");
-    setTimeout(function() {
-      blackout.classList.add("off");
-    }, 50);
-  };
   var ReturnToExplodeAssemble = function() {
     navLinkDatasheets.classList.remove("current");
     navLinkComponents.classList.add("current");
     sectionDatasheets.classList.remove("active");
     document.querySelector(".datazoom-btn.datasheets").click();
-    FlashBlackout();
-    document.querySelector(`.dots_wrap.${explodeOrAssemble}`).classList.add("active");
+    FlashBlackout(FLASH_BLACKOUT);
+    document.querySelector(`.dots-all-wrapper.${explodeOrAssemble}`).querySelector(".dots_wrap").classList.add("active");
     document.querySelector(`.dots-all-wrapper.${explodeOrAssemble}`).classList.add("active");
     sectionMapDots.classList.add("active");
     ActivateDotsButtons();
   };
   var ActivateDataZoomWrapper = function(value) {
     ctrlBtnWrapper.classList.remove("active");
-    dataZoomMainHeading.classList.remove("active");
     datasheetsAllWrapper.classList.remove("active");
     datasheetsAllWrapper.style.display = "none";
     if (!fromExplodeAssemble) FlashBlackout();
@@ -526,7 +542,7 @@
         el.querySelectorAll(".vid.datazoom").forEach(function(el2) {
           setTimeout(function() {
             el2.play();
-          }, 200);
+          }, PLAY_DATASHEET_VID_AFTER_DELAY);
         });
       }
     });
@@ -566,12 +582,12 @@
           if (currentVid > 4 && instructionVidLooping) {
             currentVid = 1;
           } else if (currentVid > 4 && !instructionVidLooping) {
-            FlashBlackout();
+            FlashBlackout(FLASH_BLACKOUT);
             ResetToMainScreen();
             return;
           }
           ActivateAllWrapperAndPlayVids(`step-${currentVid}`);
-        }, 2e3);
+        }, PAUSE_BETWEEN_INSTRUCTION_VIDS);
       }
     });
   });
