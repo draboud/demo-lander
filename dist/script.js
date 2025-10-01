@@ -1,5 +1,6 @@
 (() => {
   // script.js
+  console.log("latest code -1");
   var blackoutFlag = true;
   var FEATURE_MAIN_VID_REPLAY = 1e4;
   var DATASHEET_BUTTON_TIMER = 1500;
