@@ -1,7 +1,6 @@
 //UNIVERSAL DEFINITIONS
-console.log("latest code -1");
 let blackoutFlag = true;
-const FEATURE_MAIN_VID_REPLAY = 10000;
+const FEATURE_MAIN_VID_REPLAY = 5000;
 const DATASHEET_BUTTON_TIMER = 1500;
 const FADE_IN_COMPONENTS_HEADING = 25;
 const FADE_IN_DATASHEETS_GRID = 25;
@@ -46,7 +45,11 @@ const allFeatureVidContentWrappers = document.querySelectorAll(
 );
 const allFeatureVidWrappers = document.querySelectorAll(".vid-wrapper");
 const allFeatureVids = document.querySelectorAll(".vid.feature");
+const allFeatureVidsMobileP = document.querySelectorAll(
+  ".vid.feature-mobile-p"
+);
 const allFeatureEndVids = document.querySelectorAll(".vid.end");
+const allFeatureEndVidsMobileP = document.querySelectorAll(".vid.end-mobile-p");
 let activeVidAllWrapper;
 let vidFlag;
 let newTimer;
@@ -319,32 +322,22 @@ const SetActiveVidAndPlay = function (vidFlag) {
   });
   allFeatureVidContentWrappers.forEach(function (el) {
     el.classList.remove("active");
-    if (vidFlag === "rotation" && el.classList.contains("rotation")) {
-      el.classList.add("active");
-      return;
-    }
   });
-  activeVidAllWrapper.querySelectorAll(".vid.feature").forEach(function (el) {
-    el.play();
-  });
-  activeVidAllWrapper
-    .querySelectorAll(".vid.feature.mobile-p")
-    .forEach(function (el) {
-      el.play();
-    });
+  if (vidFlag === "rotation") {
+    activeVidAllWrapper
+      .querySelector(".vid-content-wrapper")
+      .classList.add("active");
+    return;
+  }
+  activeVidAllWrapper.querySelector(".vid.feature").play();
+  activeVidAllWrapper.querySelector(".vid.feature-mobile-p").play();
 };
 const SetActiveEndVidAndPlay = function () {
   activeVidAllWrapper.querySelectorAll(".vid-wrapper").forEach(function (el) {
     el.classList.remove("active");
   });
-  activeVidAllWrapper.querySelectorAll(".vid.end").forEach(function (el) {
-    el.play();
-  });
-  activeVidAllWrapper
-    .querySelectorAll(".vid.end.mobile-p")
-    .forEach(function (el) {
-      el.play();
-    });
+  activeVidAllWrapper.querySelector(".vid.end").play();
+  activeVidAllWrapper.querySelector(".vid.end-mobile-p").play();
 };
 //....................................................................
 //COMPONENTS SECTION
