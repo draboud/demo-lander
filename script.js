@@ -1,5 +1,4 @@
 //UNIVERSAL DEFINITIONS
-console.log("test git commit");
 let blackoutFlag = true;
 const FEATURE_MAIN_VID_REPLAY = 10000;
 const DATASHEET_BUTTON_TIMER = 1500;
