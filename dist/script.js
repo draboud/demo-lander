@@ -1,6 +1,6 @@
 (() => {
   // script.js
-  console.log("try git");
+  console.log("test git commit");
   var blackoutFlag = true;
   var FEATURE_MAIN_VID_REPLAY = 1e4;
   var DATASHEET_BUTTON_TIMER = 1500;
