@@ -533,6 +533,9 @@ ctrlBtnWrapper.addEventListener("click", function (e) {
     allDataZoomVids.forEach(function (el) {
       el.currentTime = 0;
     });
+    allDataZoomVidsMobileP.forEach(function (el) {
+      el.currentTime = 0;
+    });
     datasheetsAllWrapper.style.display = "grid";
     setTimeout(function () {
       datasheetsAllWrapper.classList.add("active");
@@ -545,6 +548,9 @@ datasheetsAllWrapper.addEventListener("click", function (e) {
   const clicked = e.target.closest(".datasheet-card-wrapper");
   if (!clicked) return;
   allDataZoomVids.forEach(function (el) {
+    el.currentTime = 0;
+  });
+  allDataZoomVidsMobileP.forEach(function (el) {
     el.currentTime = 0;
   });
   ActivateDataZoomWrapper(clicked.classList[1]);
