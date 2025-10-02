@@ -320,7 +320,14 @@ const SetActiveVidAndPlay = function (vidFlag) {
   allFeatureVids.forEach(function (el) {
     el.currentTime = 0;
   });
+  allFeatureVidsMobileP.forEach(function (el) {
+    el.currentTime = 0;
+  });
   allFeatureEndVids.forEach(function (el) {
+    el.currentTime = 0;
+    el.pause();
+  });
+  allFeatureEndVidsMobileP.forEach(function (el) {
     el.currentTime = 0;
     el.pause();
   });
