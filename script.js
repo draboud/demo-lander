@@ -1,5 +1,6 @@
 //UNIVERSAL DEFINITIONS
 //....................................................................
+console.log("Oct 2, 2025");
 let blackoutFlag = true;
 const FEATURE_MAIN_VID_REPLAY = 5000;
 const DATASHEET_BUTTON_TIMER = 1500;
